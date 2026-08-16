@@ -4,16 +4,14 @@ Système d'Information Scolaire (SIS) pour le CS Jérusalem, école secondaire m
 Lubumbashi (Haut-Katanga, RDC). Voir `.claude/plans/` de la session de conception pour
 l'architecture complète (schéma de base de données, RBAC, roadmap par étapes).
 
-**État actuel : P0 complet + Emploi du temps + Préinscription + Discipline complète (P1).**
-Tous les éléments de la priorité P0 du brief sont fonctionnels : authentification, RBAC réel
-(backend, pas seulement UI), élèves, classes, enseignants, année scolaire, notes/bulletins
-PDF, présences, finance/paiements/reçus PDF. L'emploi du temps (avec détection de conflits)
-a fermé le TODO laissé ouvert dans Notes et Présence : l'affectation enseignant↔classe est
-désormais réelle. La préinscription publique donne au site son vrai "front door". La
-Discipline gère maintenant incidents, sanctions et convocations, au-delà des présences.
-Identité visuelle alignée sur les couleurs du blason de l'établissement (vert/rouge).
-Restent à livrer : notifications, site public élargi (à propos, vie scolaire, actualités,
-galerie), bibliothèque numérique, rapports avancés.
+**État actuel : P0, P1 et P2 complets.** Authentification et RBAC réel (backend, jamais
+seulement l'UI), 8 espaces par rôle, finance/paiements/reçus PDF, notes/bulletins PDF,
+présences, emploi du temps (avec détection de conflits), préinscription publique, discipline
+(incidents/sanctions/convocations), notifications (web + email réels, SMS/WhatsApp en attente
+d'un fournisseur), site public élargi (actualités/événements/galerie avec carrousel photo),
+bibliothèque numérique, rapports avancés exportables en PDF, administration Super Admin
+(utilisateurs, paramètres, années scolaires, identité visuelle, journal d'audit réellement
+persisté). Voir la section « Déploiement en production » pour la mise en ligne.
 
 ## Stack
 
@@ -321,6 +319,68 @@ confondues avec des données réelles d'exploitation.
   seulement par masquage de menu côté template.
 - Secrets (clé Flask, identifiants base de données, mot de passe admin) exclusivement via
   variables d'environnement — jamais commités dans le dépôt.
+- `FLASK_ENV=development` est le **seul** moyen d'autoriser des valeurs de secours pour
+  `SECRET_KEY`/`ADMIN_MOT_DE_PASSE` (nécessaire en local). Sans cette variable — donc en
+  production par défaut — le démarrage échoue si ces secrets ne sont pas explicitement
+  fournis, pour ne jamais déployer accidentellement avec les identifiants par défaut visibles
+  dans ce dépôt (même convention que le projet Majt Shop).
+
+## Déploiement en production
+
+Déploiement sur **Render**, même plateforme que le projet Majt Shop.
+
+### 1. Base de données MySQL
+
+Créer une nouvelle base MySQL (une base dédiée, séparée de celle de Majt Shop) chez le même
+hébergeur MySQL déjà utilisé pour Majt Shop, et noter la chaîne de connexion au format :
+
+```
+mysql+pymysql://<utilisateur>:<mot_de_passe>@<hôte>:<port>/<nom_base>
+```
+
+### 2. Dépôt GitHub
+
+```bash
+git remote add origin <url-du-dépôt-github>
+git push -u origin main
+```
+
+(Le dépôt local est déjà initialisé avec un premier commit — `git init` a été fait, mais
+aucun remote ni push n'a été exécuté automatiquement : c'est une étape volontairement
+laissée à l'utilisateur.)
+
+### 3. Service Render
+
+`render.yaml` est déjà présent à la racine — sur Render, choisir *New > Blueprint* et pointer
+vers le dépôt GitHub : Render lit `render.yaml` et pré-remplit le service. Variables
+d'environnement à renseigner manuellement dans le tableau de bord Render (marquées
+`sync: false` dans `render.yaml`, donc non générées automatiquement) :
+
+| Variable | Valeur |
+|---|---|
+| `DATABASE_URL` | la chaîne de connexion MySQL de l'étape 1 |
+| `ADMIN_MOT_DE_PASSE` | mot de passe réel du compte Super Admin — **à changer**, ne pas garder la valeur de développement |
+| `MAIL_SERVER`, `MAIL_USERNAME`, `MAIL_PASSWORD` | uniquement si le canal email des notifications doit être actif dès le lancement (sinon laisser vide, le site fonctionne normalement sans) |
+
+`SECRET_KEY` est généré automatiquement par Render (`generateValue: true`). `preDeployCommand:
+flask db upgrade` applique les migrations automatiquement à chaque déploiement, avant que la
+nouvelle version ne reçoive du trafic.
+
+### 4. Après le premier déploiement
+
+- Se connecter avec `ADMIN_EMAIL` / `ADMIN_MOT_DE_PASSE` définis en variables d'environnement.
+- **Ne pas lancer `seed_demo.py` en production** — il crée des comptes et données de
+  démonstration (`is_demo=True`) qui n'ont pas leur place sur une instance réelle. Créer les
+  vrais comptes (enseignants, comptables, etc.) via `/admin/utilisateurs`, et la vraie année
+  scolaire via `/admin/parametres`.
+- **Stockage des fichiers uploadés (limite connue)** : les documents/photos téléversés
+  (`instance/uploads/`) sont écrits sur le disque local du service. Sur le plan gratuit de
+  Render, ce disque est **éphémère** — tout fichier téléversé est perdu à chaque redéploiement
+  ou redémarrage du service. Pour un usage réel où les documents doivent persister (logo,
+  photos de galerie, pièces jointes de préinscription, supports de cours), ajouter un
+  [disque persistant Render](https://render.com/docs/disks) monté sur `instance/uploads`, ou
+  migrer vers un stockage objet externe (S3-compatible) — non fait dans cette session, à
+  prévoir avant une mise en production avec de vrais uploads.
 
 ## Prochaines étapes
 
