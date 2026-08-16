@@ -1,0 +1,51 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Bibliothèque — {{ student.full_name }}{% endblock %}
+{% block dashboard_content %}
+<h1>Bibliothèque numérique — {{ student.full_name }}</h1>
+
+<h2>Supports de cours</h2>
+<div class="csj-table-wrap">
+  <table class="csj-table">
+    <thead><tr><th>Titre</th><th>Matière</th><th>Catégorie</th><th>Fichier</th></tr></thead>
+    <tbody>
+      {% for m in materials %}
+      <tr>
+        <td>{{ m.title }}</td>
+        <td>{{ m.subject.name }}</td>
+        <td>{{ m.CATEGORY_LABELS[m.category] }}</td>
+        <td>
+          {% if files_by_material.get(m.id) %}
+          <a href="{{ url_for('parent.child_library_file_download', student_id=student.id, document_id=files_by_material[m.id].id) }}">Télécharger</a>
+          {% else %}—{% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="4" style="color: var(--csj-muted);">Aucun support de cours disponible.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<h2 style="margin-top:2rem;">Devoirs</h2>
+<div class="csj-table-wrap">
+  <table class="csj-table">
+    <thead><tr><th>Titre</th><th>Matière</th><th>À rendre pour le</th><th>Fichier</th></tr></thead>
+    <tbody>
+      {% for h in homeworks %}
+      <tr>
+        <td>{{ h.title }}</td>
+        <td>{{ h.subject.name }}</td>
+        <td>{{ h.due_date.strftime("%d/%m/%Y") }}</td>
+        <td>
+          {% if files_by_homework.get(h.id) %}
+          <a href="{{ url_for('parent.child_library_file_download', student_id=student.id, document_id=files_by_homework[h.id].id) }}">Télécharger</a>
+          {% else %}—{% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="4" style="color: var(--csj-muted);">Aucun devoir pour le moment.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

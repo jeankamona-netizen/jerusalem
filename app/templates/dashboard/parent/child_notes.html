@@ -1,0 +1,42 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Notes — {{ student.full_name }}{% endblock %}
+{% block dashboard_content %}
+<h1>Notes — {{ student.full_name }}</h1>
+
+<form method="get" style="margin-bottom: 1rem;">
+  <div class="csj-field" style="max-width: 260px;">
+    <label for="term">Trimestre</label>
+    <select name="term" id="term" onchange="this.form.submit()">
+      {% for code, label in constants.TERM_LABELS.items() %}
+      <option value="{{ code }}" {{ "selected" if code == selected_term else "" }}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+</form>
+
+<div class="csj-table-wrap">
+  <table class="csj-table">
+    <thead><tr><th>Matière</th><th>Moyenne /20</th></tr></thead>
+    <tbody>
+      {% for row in subject_averages %}
+      <tr>
+        <td>{{ row.subject.name }}</td>
+        <td>{{ "%.2f"|format(row.average) if row.average is not none else "—" }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="2" style="color: var(--csj-muted);">Aucune note enregistrée pour ce trimestre.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% if overall_average is not none %}
+<p style="font-weight:600; margin-top:1rem;">Moyenne générale : {{ "%.2f"|format(overall_average) }} / 20</p>
+{% endif %}
+
+{% if report_card %}
+<a href="{{ url_for('parent.bulletin_download', report_card_id=report_card.id) }}" class="csj-btn">Télécharger le bulletin</a>
+{% else %}
+<p style="color: var(--csj-muted);">Bulletin pas encore généré par la Direction des Études pour ce trimestre.</p>
+{% endif %}
+{% endblock %}

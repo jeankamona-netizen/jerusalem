@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @page { size: A4 landscape; margin: 1.5cm; }
+  body { font-family: Helvetica, Arial, sans-serif; font-size: 10pt; color: #1f2a24; }
+  .header { text-align: center; margin-bottom: 10px; }
+  .header h1 { font-size: 14pt; margin: 0; color: #0b3d2e; }
+  .header p { margin: 2px 0; font-size: 9pt; color: #5c6b63; }
+  .title { text-align: center; font-size: 12pt; font-weight: bold; margin: 10px 0; }
+  table.schedule { width: 100%; border-collapse: collapse; margin-top: 10px; }
+  table.schedule th { background: #0b3d2e; color: #fff; padding: 5px; font-size: 8pt; text-align: left; }
+  table.schedule td { border-bottom: 1px solid #dde3df; padding: 5px; font-size: 9pt; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <h1>{{ school.name }}</h1>
+    <p>{{ school.city }}, {{ school.province }}, {{ school.country }}{% if school_year %} — {{ school_year.label }}{% endif %}</p>
+  </div>
+  <div class="title">{{ title }}</div>
+
+  <table class="schedule">
+    <thead>
+      <tr><th>Jour</th><th>Heure</th><th>Classe</th><th>Matière</th><th>Enseignant</th><th>Salle</th></tr>
+    </thead>
+    <tbody>
+      {% for entry in entries %}
+      <tr>
+        <td>{{ day_labels[entry.day] }}</td>
+        <td>{{ entry.start_time.strftime("%H:%M") }} – {{ entry.end_time.strftime("%H:%M") }}</td>
+        <td>{{ entry.classe.name }}</td>
+        <td>{{ entry.subject.name }}</td>
+        <td>{{ entry.teacher.nom }}</td>
+        <td>{{ entry.room.name if entry.room else "—" }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6">Aucun créneau.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>

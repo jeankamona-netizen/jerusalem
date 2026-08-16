@@ -1,0 +1,40 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Présences — Discipline{% endblock %}
+{% block dashboard_content %}
+<h1>Absences & retards</h1>
+
+<form method="get" style="margin-bottom: 1rem;">
+  <div class="csj-field" style="max-width: 220px;">
+    <label for="date">Date</label>
+    <input type="date" name="date" id="date" value="{{ date.isoformat() }}" onchange="this.form.submit()">
+  </div>
+</form>
+
+<div class="csj-table-wrap">
+  <table class="csj-table">
+    <thead><tr><th>Élève</th><th>Classe</th><th>Statut</th><th>Heure d'arrivée</th><th>Commentaire</th><th>Justifié</th><th></th></tr></thead>
+    <tbody>
+      {% for record in records %}
+      <tr>
+        <td>{{ record.student.full_name }}</td>
+        <td>{{ record.classe.name }}</td>
+        <td><span class="csj-pill {{ 'danger' if record.status == 'absent' else 'warn' }}">{{ "Absent" if record.status == "absent" else "Retard" }}</span></td>
+        <td>{{ record.arrival_time.strftime("%H:%M") if record.arrival_time else "—" }}</td>
+        <td>{{ record.comment or "—" }}</td>
+        <td>{{ "Oui" if record.justified else "Non" }}</td>
+        <td>
+          {% if current_user.has_permission(constants.ATTENDANCE_JUSTIFY) %}
+          <form method="post" action="{{ url_for('discipline.justify_attendance', attendance_id=record.id) }}" style="display:inline;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="csj-btn secondary">{{ "Annuler la justification" if record.justified else "Justifier" }}</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" style="color: var(--csj-muted);">Aucune absence ni retard ce jour-là.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "layouts/base.html" %}
+{% block title %}Préinscription — CS Jérusalem{% endblock %}
+{% block content %}
+<section style="max-width: 640px; margin: 2rem auto; padding: 0 1.25rem;">
+  <h1>Préinscription</h1>
+  {% if not form %}
+  <p style="color: var(--csj-danger);">La préinscription n'est pas disponible pour le moment.</p>
+  {% else %}
+  <p style="color: var(--csj-muted);">
+    Les documents (photo, bulletin) peuvent aussi être apportés directement au secrétariat si
+    vous ne pouvez pas les téléverser maintenant.
+  </p>
+  <form method="post" enctype="multipart/form-data">
+    {{ form.csrf_token }}
+
+    <h2 style="font-size:1.05rem;">Élève</h2>
+    <div class="csj-field">{{ form.nom.label }} {{ form.nom() }}
+      {% for e in form.nom.errors %}<p class="csj-errors">{{ e }}</p>{% endfor %}
+    </div>
+    <div class="csj-field">{{ form.postnom.label }} {{ form.postnom() }}</div>
+    <div class="csj-field">{{ form.prenom.label }} {{ form.prenom() }}</div>
+    <div class="csj-field">{{ form.sexe.label }} {{ form.sexe() }}</div>
+    <div class="csj-field">{{ form.date_naissance.label }} {{ form.date_naissance() }}
+      {% for e in form.date_naissance.errors %}<p class="csj-errors">{{ e }}</p>{% endfor %}
+    </div>
+    <div class="csj-field">{{ form.lieu_naissance.label }} {{ form.lieu_naissance() }}</div>
+    <div class="csj-field">{{ form.nationalite.label }} {{ form.nationalite() }}</div>
+    <div class="csj-field">{{ form.adresse.label }} {{ form.adresse() }}</div>
+    <div class="csj-field">{{ form.ancienne_ecole.label }} {{ form.ancienne_ecole() }}</div>
+    <div class="csj-field">{{ form.classe_demandee_id.label }} {{ form.classe_demandee_id() }}</div>
+
+    <h2 style="font-size:1.05rem; margin-top:1.5rem;">Parent / Tuteur</h2>
+    <div class="csj-field">{{ form.parent_nom.label }} {{ form.parent_nom() }}
+      {% for e in form.parent_nom.errors %}<p class="csj-errors">{{ e }}</p>{% endfor %}
+    </div>
+    <div class="csj-field">{{ form.parent_telephone.label }} {{ form.parent_telephone(placeholder="+243 ...") }}
+      {% for e in form.parent_telephone.errors %}<p class="csj-errors">{{ e }}</p>{% endfor %}
+    </div>
+    <div class="csj-field">{{ form.parent_email.label }} {{ form.parent_email() }}
+      {% for e in form.parent_email.errors %}<p class="csj-errors">{{ e }}</p>{% endfor %}
+    </div>
+    <div class="csj-field">{{ form.parent_adresse.label }} {{ form.parent_adresse() }}</div>
+    <div class="csj-field">{{ form.parent_relation.label }} {{ form.parent_relation() }}</div>
+
+    <h2 style="font-size:1.05rem; margin-top:1.5rem;">Documents (optionnel)</h2>
+    <div class="csj-field">{{ form.photo.label }} {{ form.photo() }}
+      {% for e in form.photo.errors %}<p class="csj-errors">{{ e }}</p>{% endfor %}
+    </div>
+    <div class="csj-field">{{ form.document_scolaire.label }} {{ form.document_scolaire() }}
+      {% for e in form.document_scolaire.errors %}<p class="csj-errors">{{ e }}</p>{% endfor %}
+    </div>
+
+    <div class="csj-form-actions"><button type="submit" class="csj-btn">Soumettre le dossier</button></div>
+  </form>
+  {% endif %}
+</section>
+{% endblock %}

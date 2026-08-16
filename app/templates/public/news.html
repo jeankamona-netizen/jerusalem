@@ -1,0 +1,44 @@
+{% extends "layouts/base.html" %}
+{% block title %}Actualités — CS Jérusalem{% endblock %}
+{% block content %}
+<section style="max-width: 900px; margin: 3rem auto; padding: 0 1.25rem;">
+  <h1>Actualités</h1>
+
+  {% if announcements %}
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:1rem; margin-bottom:2.5rem;">
+    {% for a in announcements %}
+    <a href="{{ url_for('public.news_detail', announcement_id=a.id) }}" class="csj-panel" style="display:block; text-decoration:none; color:inherit;">
+      {% if images_by_announcement.get(a.id) %}
+      <img src="{{ url_for('public.news_image', document_id=images_by_announcement[a.id].id) }}" alt="{{ a.title }}" style="width:100%; height:140px; object-fit:cover; border-radius:6px; margin-bottom:0.6rem;">
+      {% endif %}
+      <span class="csj-pill" style="margin-bottom:0.4rem; display:inline-block;">{{ a.CATEGORY_LABELS[a.category] }}</span>
+      <h3 style="margin:0.2rem 0;">{{ a.title }}</h3>
+      <p style="color: var(--csj-muted); font-size:0.9rem;">{{ a.body[:140] }}{{ "…" if a.body|length > 140 else "" }}</p>
+      <p style="color: var(--csj-muted); font-size:0.8rem;">{{ a.published_at.strftime("%d/%m/%Y") if a.published_at else "" }}</p>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p style="color: var(--csj-muted);">Aucune actualité publiée pour le moment.</p>
+  {% endif %}
+
+  <h2>Événements à venir</h2>
+  {% if upcoming_events %}
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:1rem;">
+    {% for e in upcoming_events %}
+    <div class="csj-panel">
+      {% if images_by_event.get(e.id) %}
+      <img src="{{ url_for('public.event_image', document_id=images_by_event[e.id].id) }}" alt="{{ e.title }}" style="width:100%; height:140px; object-fit:cover; border-radius:6px; margin-bottom:0.6rem;">
+      {% endif %}
+      <span class="csj-pill" style="margin-bottom:0.4rem; display:inline-block;">{{ e.CATEGORY_LABELS[e.category] }}</span>
+      <h3 style="margin:0.2rem 0;">{{ e.title }}</h3>
+      <p style="color: var(--csj-muted); font-size:0.8rem;">{{ e.date.strftime("%d/%m/%Y") }}</p>
+      {% if e.description %}<p style="font-size:0.9rem;">{{ e.description }}</p>{% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p style="color: var(--csj-muted);">Aucun événement à venir.</p>
+  {% endif %}
+</section>
+{% endblock %}

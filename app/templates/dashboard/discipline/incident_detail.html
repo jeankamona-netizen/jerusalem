@@ -1,0 +1,39 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Incident — {{ incident.student.full_name }}{% endblock %}
+{% block dashboard_content %}
+<h1>Incident — {{ incident.student.full_name }}</h1>
+<p>
+  <span class="csj-pill {{ 'danger' if incident.severity == 'grave' else ('warn' if incident.severity == 'moyenne' else 'ok') }}">{{ incident.SEVERITY_LABELS[incident.severity] }}</span>
+  <span style="color: var(--csj-muted); margin-left:0.5rem;">{{ incident.date.strftime("%d/%m/%Y") }} — rapporté par {{ incident.reported_by.email }}</span>
+</p>
+
+<div class="csj-panel" style="max-width:600px;">
+  <h2>Description des faits</h2>
+  <p>{{ incident.description }}</p>
+</div>
+
+<div class="csj-panel" style="max-width:600px;">
+  <h2>Mesures prises</h2>
+  {% if incident.actions %}
+  <ul>
+    {% for action in incident.actions %}
+    <li><strong>{{ action.TYPE_LABELS[action.type] }}</strong> — {{ action.date.strftime("%d/%m/%Y") }}{% if action.details %} : {{ action.details }}{% endif %}</li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p style="color: var(--csj-muted);">Aucune mesure enregistrée pour l'instant.</p>
+  {% endif %}
+
+  {% if form %}
+  <form method="post" style="margin-top:1rem;">
+    {{ form.csrf_token }}
+    <div class="csj-field">{{ form.type.label }} {{ form.type() }}</div>
+    <div class="csj-field">{{ form.date.label }} {{ form.date() }}</div>
+    <div class="csj-field">{{ form.details.label }} {{ form.details(rows=2) }}</div>
+    <div class="csj-form-actions"><button type="submit" class="csj-btn secondary">Ajouter une mesure</button></div>
+  </form>
+  {% endif %}
+</div>
+
+<a href="{{ url_for('discipline.student_file', student_id=incident.student_profile_id) }}" class="csj-btn secondary">Voir la fiche disciplinaire complète</a>
+{% endblock %}

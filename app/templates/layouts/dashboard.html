@@ -1,0 +1,14 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="csj-app">
+  <aside class="csj-sidebar">
+    {% for item in sidebar_items %}
+      <a href="{{ url_for(item.endpoint) }}" class="{{ 'active' if request.endpoint == item.endpoint else '' }}">{{ item.label }}</a>
+    {% endfor %}
+  </aside>
+  <main class="csj-main">
+    {% block dashboard_content %}{% endblock %}
+  </main>
+</div>
+{% endblock %}

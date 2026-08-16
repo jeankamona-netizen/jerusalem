@@ -1,0 +1,138 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Rapports — Préfet{% endblock %}
+{% block dashboard_content %}
+<h1>Rapports{% if school_year %} — {{ school_year.label }}{% endif %}</h1>
+
+{% if not school_year %}
+<p style="color: var(--csj-danger);">Aucune année scolaire active configurée.</p>
+{% else %}
+
+<div class="csj-panel">
+  <h2>Rapport de présence</h2>
+  <form method="get" style="display:flex; gap:0.75rem; flex-wrap:wrap; align-items:end; margin-bottom:1rem;">
+    <input type="hidden" name="term" value="{{ term }}">
+    <div class="csj-field" style="margin-bottom:0;">
+      <label for="date_from">Du</label>
+      <input type="date" name="date_from" id="date_from" value="{{ date_from.isoformat() }}">
+    </div>
+    <div class="csj-field" style="margin-bottom:0;">
+      <label for="date_to">Au</label>
+      <input type="date" name="date_to" id="date_to" value="{{ date_to.isoformat() }}">
+    </div>
+    <div class="csj-form-actions" style="margin:0;">
+      <button type="submit" class="csj-btn secondary">Filtrer</button>
+    </div>
+  </form>
+  <div class="csj-table-wrap">
+    <table class="csj-table">
+      <thead><tr><th>Classe</th><th>Effectif</th><th>Absences</th><th>Retards</th><th>Taux de présence</th></tr></thead>
+      <tbody>
+        {% for row in attendance_rows %}
+        <tr>
+          <td>{{ row.classe.name }}</td>
+          <td>{{ row.effectif }}</td>
+          <td>{{ row.absences }}</td>
+          <td>{{ row.retards }}</td>
+          <td>{{ "%.0f"|format(row.taux_presence) ~ " %" if row.taux_presence is not none else "—" }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" style="color: var(--csj-muted);">Aucune donnée de présence sur cette période.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <a href="{{ url_for('prefet.report_attendance_pdf', date_from=date_from.isoformat(), date_to=date_to.isoformat()) }}" class="csj-btn" style="margin-top:0.75rem; display:inline-block;">Télécharger en PDF</a>
+</div>
+
+<div class="csj-panel">
+  <h2>Rapport financier</h2>
+  <div class="csj-cards">
+    <div class="csj-card"><div class="value">{{ "%.0f"|format(financial.totals.due) }}</div><div class="label">Montant attendu</div></div>
+    <div class="csj-card"><div class="value">{{ "%.0f"|format(financial.totals.paid) }}</div><div class="label">Montant encaissé</div></div>
+    <div class="csj-card"><div class="value">{{ "%.0f"|format(financial.total_expenses) }}</div><div class="label">Dépenses</div></div>
+    <div class="csj-card"><div class="value">{{ "%.0f"|format(financial.net) }}</div><div class="label">Net (encaissé - dépenses)</div></div>
+  </div>
+  <div class="csj-table-wrap" style="margin-top:1rem;">
+    <table class="csj-table">
+      <thead><tr><th>Type de frais</th><th>Attendu</th><th>Encaissé</th><th>Solde</th></tr></thead>
+      <tbody>
+        {% for row in financial.by_fee_type %}
+        <tr>
+          <td>{{ row.fee_type.label }}</td>
+          <td>{{ "%.0f"|format(row.due) }}</td>
+          <td>{{ "%.0f"|format(row.paid) }}</td>
+          <td>{{ "%.0f"|format(row.balance) }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4" style="color: var(--csj-muted);">Aucun type de frais configuré.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <a href="{{ url_for('prefet.report_financial_pdf') }}" class="csj-btn" style="margin-top:0.75rem; display:inline-block;">Télécharger en PDF</a>
+</div>
+
+<div class="csj-panel">
+  <h2>Rapport académique</h2>
+  <form method="get" style="margin-bottom:1rem; max-width:260px;">
+    <input type="hidden" name="date_from" value="{{ date_from.isoformat() }}">
+    <input type="hidden" name="date_to" value="{{ date_to.isoformat() }}">
+    <div class="csj-field">
+      <label for="term">Trimestre</label>
+      <select name="term" id="term" onchange="this.form.submit()">
+        {% for code, label in constants.TERM_LABELS.items() %}
+        <option value="{{ code }}" {{ "selected" if code == term else "" }}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </form>
+  <div class="csj-table-wrap">
+    <table class="csj-table">
+      <thead><tr><th>Classe</th><th>Effectif</th><th>Moyenne générale /20</th></tr></thead>
+      <tbody>
+        {% for row in academic.by_classe %}
+        <tr>
+          <td>{{ row.classe.name }}</td>
+          <td>{{ row.effectif }}</td>
+          <td>{{ "%.2f"|format(row.moyenne) if row.moyenne is not none else "—" }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="3" style="color: var(--csj-muted);">Aucune classe configurée.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% if academic.top5 %}
+  <h3 style="margin-top:1.5rem;">Meilleures moyennes</h3>
+  <div class="csj-table-wrap">
+    <table class="csj-table">
+      <thead><tr><th>Élève</th><th>Classe</th><th>Moyenne /20</th></tr></thead>
+      <tbody>
+        {% for row in academic.top5 %}
+        <tr><td>{{ row.student.full_name }}</td><td>{{ row.classe.name }}</td><td>{{ "%.2f"|format(row.average) }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+
+  {% if academic.bottom5 %}
+  <h3 style="margin-top:1.5rem;">Moyennes les plus faibles</h3>
+  <div class="csj-table-wrap">
+    <table class="csj-table">
+      <thead><tr><th>Élève</th><th>Classe</th><th>Moyenne /20</th></tr></thead>
+      <tbody>
+        {% for row in academic.bottom5 %}
+        <tr><td>{{ row.student.full_name }}</td><td>{{ row.classe.name }}</td><td>{{ "%.2f"|format(row.average) }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+
+  <a href="{{ url_for('prefet.report_academic_pdf', term=term) }}" class="csj-btn" style="margin-top:0.75rem; display:inline-block;">Télécharger en PDF</a>
+</div>
+
+{% endif %}
+{% endblock %}

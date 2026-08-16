@@ -1,0 +1,63 @@
+{% extends "layouts/base.html" %}
+{% block title %}CS Jérusalem — Portail Scolaire Numérique{% endblock %}
+{% block content %}
+<section style="max-width: 780px; margin: 3rem auto; padding: 0 1.25rem; text-align: center;">
+  <img src="{{ url_for('public.logo') }}" alt="Logo {{ school.name if school else 'CS Jérusalem' }}" style="width:6rem; height:6rem; object-fit:contain; display:block; margin: 0 auto 1rem;">
+  <h1 style="margin-bottom:0.3rem;">{{ school.name if school else 'CS Jérusalem' }}</h1>
+  <p style="color: var(--csj-muted); font-size:1.1rem; margin-top:0;">École secondaire — {{ school.city if school else 'Lubumbashi' }}, {{ school.province if school else 'Haut-Katanga' }}, {{ school.country if school else 'RDC' }}</p>
+  <p style="color: var(--csj-text);">Discipline, excellence et foi au service de l'éducation.</p>
+  <div style="margin-top: 1.5rem; display:flex; gap: 0.8rem; justify-content:center; flex-wrap: wrap;">
+    <a href="{{ url_for('public.application_new') }}" class="csj-btn">Préinscription</a>
+    <a href="{{ url_for('public.about') }}" class="csj-btn secondary">À propos</a>
+    <a href="{{ url_for('auth.login') }}" class="csj-btn secondary">Connexion</a>
+  </div>
+</section>
+
+{% if carousel_images %}
+<section style="max-width: 900px; margin: 0 auto 3rem; padding: 0 1.25rem;">
+  <div class="csj-carousel">
+    {% for src in carousel_images %}
+    <img src="{{ src }}" alt="Photo de la vie du CS Jérusalem" style="animation-delay: {{ -(loop.index0 * 4) }}s;" {{ "loading=\"eager\"" if loop.first else "loading=\"lazy\"" }}>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<section style="max-width: 900px; margin: 0 auto 3rem; padding: 0 1.25rem;">
+  <h2>Actualités récentes</h2>
+  {% if latest_announcements %}
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:1rem;">
+    {% for a in latest_announcements %}
+    <a href="{{ url_for('public.news_detail', announcement_id=a.id) }}" class="csj-panel" style="display:block; text-decoration:none; color:inherit;">
+      <strong>{{ a.title }}</strong>
+      <p style="color: var(--csj-muted); font-size:0.9rem;">{{ a.body[:120] }}{{ "…" if a.body|length > 120 else "" }}</p>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p style="color: var(--csj-muted);">Aucune actualité publiée pour le moment.</p>
+  {% endif %}
+  <p style="margin-top:1rem;"><a href="{{ url_for('public.news') }}">Toutes les actualités →</a></p>
+</section>
+
+<section style="max-width: 900px; margin: 0 auto 3rem; padding: 0 1.25rem;">
+  <h2>Prochains événements</h2>
+  {% if upcoming_events %}
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1rem;">
+    {% for e in upcoming_events %}
+    <div class="csj-panel" style="display:flex; gap:0.8rem; align-items:center;">
+      {% if images_by_event.get(e.id) %}
+      <img src="{{ url_for('public.event_image', document_id=images_by_event[e.id].id) }}" alt="{{ e.title }}" style="width:64px; height:64px; object-fit:cover; border-radius:6px; flex-shrink:0;">
+      {% endif %}
+      <div>
+        <strong>{{ e.title }}</strong>
+        <p style="color: var(--csj-muted); font-size:0.85rem; margin:0.2rem 0 0;">{{ e.date.strftime("%d/%m/%Y") }}</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p style="color: var(--csj-muted);">Aucun événement à venir.</p>
+  {% endif %}
+</section>
+{% endblock %}

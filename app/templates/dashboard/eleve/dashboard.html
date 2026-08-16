@@ -1,0 +1,17 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Tableau de bord — Élève{% endblock %}
+{% block dashboard_content %}
+<h1>Bonjour {{ student_profile.full_name if student_profile else current_user.email }}</h1>
+<p style="color: var(--csj-muted);">Vous ne pouvez consulter que vos propres informations, jamais les modifier.</p>
+<div class="csj-cards">
+  <div class="csj-card"><div class="value"><a href="{{ url_for('eleve.notes') }}">Voir</a></div><div class="label">Notes & moyennes</div></div>
+  {% if attendance_summary %}
+  <div class="csj-card"><div class="value">{{ attendance_summary.absences }}</div><div class="label">Absences (année en cours)</div></div>
+  <div class="csj-card"><div class="value">{{ attendance_summary.retards }}</div><div class="label">Retards (année en cours)</div></div>
+  {% else %}
+  <div class="csj-card"><div class="value">—</div><div class="label">Présence</div></div>
+  {% endif %}
+  <div class="csj-card"><div class="value"><a href="{{ url_for('eleve.schedule') }}">Voir</a></div><div class="label">Emploi du temps</div></div>
+  <div class="csj-card"><div class="value"><a href="{{ url_for('eleve.library') }}">Voir</a></div><div class="label">Bibliothèque numérique</div></div>
+</div>
+{% endblock %}

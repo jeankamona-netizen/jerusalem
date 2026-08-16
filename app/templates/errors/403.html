@@ -1,0 +1,9 @@
+{% extends "layouts/base.html" %}
+{% block title %}Accès refusé{% endblock %}
+{% block content %}
+<section style="max-width: 500px; margin: 4rem auto; text-align:center;">
+  <h1>403 — Accès refusé</h1>
+  <p style="color: var(--csj-muted);">Vous n'avez pas la permission d'accéder à cette page.</p>
+  <a href="{{ url_for('public.home') }}" class="csj-btn">Retour à l'accueil</a>
+</section>
+{% endblock %}

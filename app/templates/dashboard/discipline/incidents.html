@@ -1,0 +1,32 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Incidents & Sanctions — Discipline{% endblock %}
+{% block dashboard_content %}
+<h1>Incidents & Sanctions</h1>
+
+{% if can_manage %}
+<p><a href="{{ url_for('discipline.incident_new') }}" class="csj-btn">Signaler un incident</a></p>
+{% endif %}
+
+<div class="csj-table-wrap">
+  <table class="csj-table">
+    <thead><tr><th>Date</th><th>Élève</th><th>Gravité</th><th>Description</th><th>Mesures</th><th></th></tr></thead>
+    <tbody>
+      {% for incident in incidents %}
+      <tr>
+        <td>{{ incident.date.strftime("%d/%m/%Y") }}</td>
+        <td>{{ incident.student.full_name }}</td>
+        <td><span class="csj-pill {{ 'danger' if incident.severity == 'grave' else ('warn' if incident.severity == 'moyenne' else 'ok') }}">{{ incident.SEVERITY_LABELS[incident.severity] }}</span></td>
+        <td>{{ incident.description[:60] }}{{ "…" if incident.description|length > 60 else "" }}</td>
+        <td>{{ incident.actions|length }}</td>
+        <td>
+          <a href="{{ url_for('discipline.incident_detail', incident_id=incident.id) }}" class="csj-btn secondary">Voir</a>
+          <a href="{{ url_for('discipline.student_file', student_id=incident.student_profile_id) }}" class="csj-btn secondary">Fiche</a>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" style="color: var(--csj-muted);">Aucun incident enregistré.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

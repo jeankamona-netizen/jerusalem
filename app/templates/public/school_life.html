@@ -1,0 +1,27 @@
+{% extends "layouts/base.html" %}
+{% block title %}Vie scolaire — CS Jérusalem{% endblock %}
+{% block content %}
+<section style="max-width: 780px; margin: 3rem auto; padding: 0 1.25rem;">
+  <h1>Vie scolaire</h1>
+  <p>
+    Au CS Jérusalem, la vie scolaire s'organise autour du travail en classe, de
+    l'accompagnement disciplinaire et d'activités qui renforcent l'esprit de communauté entre
+    élèves, enseignants et familles.
+  </p>
+  <h2>Encadrement</h2>
+  <p>
+    Chaque classe est suivie par une équipe pédagogique dédiée. La Direction de Discipline
+    veille au respect du règlement intérieur et accompagne les élèves et leurs familles en cas
+    de difficulté, dans un esprit éducatif plutôt que punitif.
+  </p>
+  <h2>Communication avec les familles</h2>
+  <p>
+    Les parents et tuteurs sont tenus informés de la scolarité de leur enfant (présences,
+    notes, convocations) via l'espace parent du portail numérique, accessible après
+    l'inscription de l'élève.
+  </p>
+  <p>
+    <a href="{{ url_for('public.news') }}">Consulter les actualités et événements →</a>
+  </p>
+</section>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Faire l'appel — Enseignant{% endblock %}
+{% block dashboard_content %}
+<h1>Faire l'appel</h1>
+
+<form method="get" style="margin-bottom: 1.5rem; display:flex; gap:0.75rem; flex-wrap: wrap; align-items:end;">
+  <div class="csj-field" style="margin-bottom:0;">
+    <label for="classe_id">Classe</label>
+    <select name="classe_id" id="classe_id">
+      {% for value, label in form.classe_id.choices %}
+      <option value="{{ value }}" {{ "selected" if classe and classe.id == value else "" }}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="csj-field" style="margin-bottom:0;">
+    <label for="subject_id">Matière</label>
+    <select name="subject_id" id="subject_id">
+      {% for value, label in form.subject_id.choices %}
+      <option value="{{ value }}" {{ "selected" if subject_id_raw == value else "" }}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="csj-field" style="margin-bottom:0;">
+    <label for="date">Date</label>
+    <input type="date" name="date" id="date" value="{{ date.isoformat() if date else "" }}" required>
+  </div>
+  <button type="submit" class="csj-btn secondary">Afficher la classe</button>
+</form>
+
+{% if students is not none %}
+<h2 style="font-size:1.05rem;">{{ classe.name }} — {{ date.strftime("%d/%m/%Y") }}</h2>
+<form method="post">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <input type="hidden" name="classe_id" value="{{ classe.id }}">
+  <input type="hidden" name="subject_id" value="{{ subject_id_raw }}">
+  <input type="hidden" name="date" value="{{ date.isoformat() }}">
+
+  <div class="csj-table-wrap">
+    <table class="csj-table">
+      <thead><tr><th>Élève</th><th>Statut</th><th>Heure d'arrivée</th><th>Commentaire</th></tr></thead>
+      <tbody>
+        {% for student in students %}
+        {% set record = existing.get(student.id) %}
+        <tr>
+          <td>{{ student.full_name }}</td>
+          <td>
+            {% for code, label in attendance_status.STATUS_LABELS.items() %}
+            <label style="margin-right:0.75rem; font-weight: normal;">
+              <input type="radio" name="status_{{ student.id }}" value="{{ code }}"
+                     {{ "checked" if (record.status if record else "present") == code else "" }}>
+              {{ label }}
+            </label>
+            {% endfor %}
+          </td>
+          <td><input type="time" name="arrival_{{ student.id }}" value="{{ record.arrival_time.strftime('%H:%M') if record and record.arrival_time else '' }}" style="width: 7rem;"></td>
+          <td><input type="text" name="comment_{{ student.id }}" value="{{ record.comment if record else '' }}" style="width: 100%;"></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4" style="color: var(--csj-muted);">Aucun élève actif dans cette classe.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="csj-form-actions"><button type="submit" class="csj-btn">Enregistrer les présences</button></div>
+</form>
+{% endif %}
+{% endblock %}

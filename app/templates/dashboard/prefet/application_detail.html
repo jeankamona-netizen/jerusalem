@@ -1,0 +1,78 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Dossier {{ application.number }} — Préfet{% endblock %}
+{% block dashboard_content %}
+<h1>Dossier {{ application.number }}</h1>
+<p><span class="csj-pill {{ 'ok' if application.status == 'accepte' else ('danger' if application.status == 'refuse' else 'warn') }}">{{ application.STATUS_LABELS[application.status] }}</span></p>
+
+<div class="csj-panel" style="max-width: 600px;">
+  <h2>Élève</h2>
+  <p><strong>Nom :</strong> {{ application.full_name }}</p>
+  <p><strong>Sexe :</strong> {{ "Masculin" if application.sexe == "M" else "Féminin" }}</p>
+  <p><strong>Date de naissance :</strong> {{ application.date_naissance.strftime("%d/%m/%Y") if application.date_naissance else "—" }}</p>
+  <p><strong>Lieu de naissance :</strong> {{ application.lieu_naissance or "—" }}</p>
+  <p><strong>Nationalité :</strong> {{ application.nationalite or "—" }}</p>
+  <p><strong>Adresse :</strong> {{ application.adresse or "—" }}</p>
+  <p><strong>Ancienne école :</strong> {{ application.ancienne_ecole or "—" }}</p>
+  <p><strong>Classe demandée :</strong> {{ application.classe_demandee.name if application.classe_demandee else "—" }}</p>
+</div>
+
+<div class="csj-panel" style="max-width: 600px;">
+  <h2>Parent / Tuteur</h2>
+  <p><strong>Nom :</strong> {{ application.parent_nom }} ({{ application.parent_relation }})</p>
+  <p><strong>Téléphone :</strong> {{ application.parent_telephone }}</p>
+  <p><strong>Email :</strong> {{ application.parent_email or "—" }}</p>
+  <p><strong>Adresse :</strong> {{ application.parent_adresse or "—" }}</p>
+</div>
+
+<div class="csj-panel" style="max-width: 600px;">
+  <h2>Documents</h2>
+  {% if documents %}
+  <ul>
+    {% for doc in documents %}
+    <li><a href="{{ url_for('prefet.application_document', document_id=doc.id) }}">{{ doc.category }} — {{ doc.original_filename }}</a></li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p style="color: var(--csj-muted);">Aucun document téléversé.</p>
+  {% endif %}
+</div>
+
+{% if application.status in ("accepte", "refuse") %}
+<div class="csj-panel" style="max-width: 600px;">
+  <h2>Décision</h2>
+  <p><strong>Le :</strong> {{ application.decided_at.strftime("%d/%m/%Y") if application.decided_at else "—" }}</p>
+  {% if application.decision_comment %}<p><strong>Commentaire :</strong> {{ application.decision_comment }}</p>{% endif %}
+  {% if application.resulting_student %}
+  <p><strong>Élève inscrit :</strong> {{ application.resulting_student.full_name }} ({{ application.resulting_student.matricule or "matricule à venir" }})</p>
+  {% endif %}
+</div>
+{% else %}
+<div class="csj-panel" style="max-width: 600px;">
+  <h2>Instruire ce dossier</h2>
+  <form method="post" action="{{ url_for('prefet.application_set_status', application_id=application.id) }}" style="margin-bottom:1rem;">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="csj-field">
+      <label for="status">Changer le statut</label>
+      <select name="status" id="status">
+        <option value="en_examen" {{ "selected" if application.status == "en_examen" else "" }}>En examen</option>
+        <option value="incomplet" {{ "selected" if application.status == "incomplet" else "" }}>Incomplet</option>
+      </select>
+    </div>
+    <div class="csj-field"><label for="comment1">Commentaire</label><textarea name="comment" id="comment1" rows="2"></textarea></div>
+    <button type="submit" class="csj-btn secondary">Mettre à jour le statut</button>
+  </form>
+
+  <form method="post" action="{{ url_for('prefet.application_accept', application_id=application.id) }}" style="margin-bottom:1rem;">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="csj-field"><label for="comment2">Commentaire (optionnel)</label><textarea name="comment" id="comment2" rows="2"></textarea></div>
+    <button type="submit" class="csj-btn">Accepter et inscrire l'élève</button>
+  </form>
+
+  <form method="post" action="{{ url_for('prefet.application_refuse', application_id=application.id) }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="csj-field"><label for="comment3">Motif du refus</label><textarea name="comment" id="comment3" rows="2"></textarea></div>
+    <button type="submit" class="csj-btn secondary">Refuser</button>
+  </form>
+</div>
+{% endif %}
+{% endblock %}

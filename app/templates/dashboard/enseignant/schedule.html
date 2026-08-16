@@ -1,0 +1,23 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Mon emploi du temps — Enseignant{% endblock %}
+{% block dashboard_content %}
+<h1>Mon emploi du temps</h1>
+<div class="csj-table-wrap">
+  <table class="csj-table">
+    <thead><tr><th>Jour</th><th>Heure</th><th>Classe</th><th>Matière</th><th>Salle</th></tr></thead>
+    <tbody>
+      {% for entry in entries %}
+      <tr>
+        <td>{{ day_labels[entry.day] }}</td>
+        <td>{{ entry.start_time.strftime("%H:%M") }} – {{ entry.end_time.strftime("%H:%M") }}</td>
+        <td>{{ entry.classe.name }}</td>
+        <td>{{ entry.subject.name }}</td>
+        <td>{{ entry.room.name if entry.room else "—" }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" style="color: var(--csj-muted);">Aucun créneau affecté pour l'instant.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

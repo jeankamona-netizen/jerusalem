@@ -1,0 +1,48 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Mes évaluations — Enseignant{% endblock %}
+{% block dashboard_content %}
+<h1>Mes évaluations</h1>
+
+{% if form %}
+<div class="csj-panel">
+  <h2>Créer une évaluation</h2>
+  <form method="post">
+    {{ form.csrf_token }}
+    <div class="csj-field">{{ form.classe_subject.label }} {{ form.classe_subject() }}</div>
+    <div class="csj-field">{{ form.assessment_type_id.label }} {{ form.assessment_type_id() }}</div>
+    <div class="csj-field">{{ form.term.label }} {{ form.term() }}</div>
+    <div class="csj-field">{{ form.date.label }} {{ form.date() }}
+      {% for error in form.date.errors %}<p class="csj-errors">{{ error }}</p>{% endfor %}
+    </div>
+    <div class="csj-field">{{ form.coefficient.label }} {{ form.coefficient() }}</div>
+    <div class="csj-field">{{ form.max_score.label }} {{ form.max_score() }}</div>
+    <div class="csj-form-actions"><button type="submit" class="csj-btn">Créer et encoder les notes</button></div>
+  </form>
+</div>
+{% else %}
+<p style="color: var(--csj-muted);">
+  Aucune classe/matière ne vous est encore affectée dans l'emploi du temps. Contactez la
+  Direction des Études.
+</p>
+{% endif %}
+
+<div class="csj-table-wrap">
+  <table class="csj-table">
+    <thead><tr><th>Date</th><th>Classe</th><th>Matière</th><th>Type</th><th>Trimestre</th><th></th></tr></thead>
+    <tbody>
+      {% for a in assessments %}
+      <tr>
+        <td>{{ a.date.strftime("%d/%m/%Y") }}</td>
+        <td>{{ a.classe.name }}</td>
+        <td>{{ a.subject.name }}</td>
+        <td>{{ a.assessment_type.label }}</td>
+        <td>{{ a.term }}</td>
+        <td><a href="{{ url_for('enseignant.assessment_grades', assessment_id=a.id) }}" class="csj-btn secondary">Encoder les notes</a></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" style="color: var(--csj-muted);">Aucune évaluation créée.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

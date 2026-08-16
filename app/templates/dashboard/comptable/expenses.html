@@ -1,0 +1,39 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Dépenses — Comptable{% endblock %}
+{% block dashboard_content %}
+<h1>Dépenses</h1>
+
+<div class="csj-panel">
+  <h2>Enregistrer une dépense</h2>
+  <form method="post">
+    {{ form.csrf_token }}
+    <div class="csj-field">{{ form.category.label }} {{ form.category(placeholder="Fournitures, salaires, entretien...") }}</div>
+    <div class="csj-field">{{ form.amount.label }} {{ form.amount() }}
+      {% for error in form.amount.errors %}<p class="csj-errors">{{ error }}</p>{% endfor %}
+    </div>
+    <div class="csj-field">{{ form.currency.label }} {{ form.currency() }}</div>
+    <div class="csj-field">{{ form.expense_date.label }} {{ form.expense_date() }}</div>
+    <div class="csj-field">{{ form.description.label }} {{ form.description(rows=2) }}</div>
+    <div class="csj-form-actions"><button type="submit" class="csj-btn">Enregistrer</button></div>
+  </form>
+</div>
+
+<p style="font-weight:600;">Total des dépenses enregistrées : {{ "%.2f"|format(total) }}</p>
+<div class="csj-table-wrap">
+  <table class="csj-table">
+    <thead><tr><th>Date</th><th>Catégorie</th><th>Montant</th><th>Description</th></tr></thead>
+    <tbody>
+      {% for e in expenses %}
+      <tr>
+        <td>{{ e.expense_date.strftime("%d/%m/%Y") }}</td>
+        <td>{{ e.category }}</td>
+        <td>{{ "%.2f"|format(e.amount) }} {{ e.currency }}</td>
+        <td>{{ e.description or "—" }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="4" style="color: var(--csj-muted);">Aucune dépense enregistrée.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

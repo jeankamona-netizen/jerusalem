@@ -1,0 +1,18 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Tableau de bord — Comptable{% endblock %}
+{% block dashboard_content %}
+<h1>Tableau de bord — Comptable</h1>
+<p style="color: var(--csj-muted);">
+  Finances de l'établissement{% if school_year %} — année scolaire {{ school_year.label }}{% endif %}.
+</p>
+<div class="csj-cards">
+  <div class="csj-card"><div class="value">{{ "%.0f"|format(stats.recettes_jour) }}</div><div class="label">Recettes du jour ({{ config.SCHOOL_CURRENCY_DEFAULT }})</div></div>
+  <div class="csj-card"><div class="value">{{ "%.0f"|format(stats.recettes_mois) }}</div><div class="label">Recettes du mois ({{ config.SCHOOL_CURRENCY_DEFAULT }})</div></div>
+  <div class="csj-card"><div class="value">{{ stats.a_jour }}</div><div class="label">Élèves à jour</div></div>
+  <div class="csj-card"><div class="value">{{ stats.partiel }}</div><div class="label">Élèves partiellement payés</div></div>
+  <div class="csj-card"><div class="value">{{ stats.retard }}</div><div class="label">Élèves en retard</div></div>
+</div>
+{% if not school_year %}
+<p style="color: var(--csj-danger);">Aucune année scolaire active. Contactez le Super Admin.</p>
+{% endif %}
+{% endblock %}

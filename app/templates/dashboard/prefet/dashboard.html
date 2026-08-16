@@ -1,0 +1,19 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Tableau de bord — Préfet des Études{% endblock %}
+{% block dashboard_content %}
+<h1>Tableau de bord — Préfet des Études</h1>
+<p style="color: var(--csj-muted);">Supervision globale de l'établissement.</p>
+<div class="csj-cards">
+  <div class="csj-card"><div class="value">{{ stats.eleves }}</div><div class="label">Élèves inscrits</div></div>
+  <div class="csj-card"><div class="value">{{ stats.enseignants }}</div><div class="label">Enseignants</div></div>
+  <div class="csj-card"><div class="value">{{ stats.classes }}</div><div class="label">Classes</div></div>
+  <div class="csj-card">
+    <div class="value">{{ "%.0f%%"|format(attendance_stats.taux_presence) if attendance_stats and attendance_stats.taux_presence is not none else "—" }}</div>
+    <div class="label">Taux de présence aujourd'hui</div>
+  </div>
+  <div class="csj-card">
+    <div class="value"><a href="{{ url_for('prefet.applications', status='soumis') }}">{{ stats.preinscriptions_en_attente }}</a></div>
+    <div class="label">Préinscriptions en attente</div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Emploi du temps — Direction des Études{% endblock %}
+{% block dashboard_content %}
+<h1>Emploi du temps{% if school_year %} — {{ school_year.label }}{% endif %}</h1>
+
+{% if not school_year %}
+<p style="color: var(--csj-danger);">Aucune année scolaire active.</p>
+{% else %}
+
+{% if can_manage %}
+<div class="csj-panel">
+  <h2>Ajouter un créneau</h2>
+  <form method="post" action="{{ url_for('direction_etudes.schedule_create') }}">
+    {{ form.csrf_token }}
+    <div class="csj-field">{{ form.classe_id.label }} {{ form.classe_id() }}</div>
+    <div class="csj-field">{{ form.subject_id.label }} {{ form.subject_id() }}</div>
+    <div class="csj-field">{{ form.teacher_profile_id.label }} {{ form.teacher_profile_id() }}</div>
+    <div class="csj-field">{{ form.room_id.label }} {{ form.room_id() }}</div>
+    <div class="csj-field">{{ form.day.label }} {{ form.day() }}</div>
+    <div class="csj-field">{{ form.start_time.label }} {{ form.start_time() }}</div>
+    <div class="csj-field">{{ form.end_time.label }} {{ form.end_time() }}</div>
+    <div class="csj-form-actions"><button type="submit" class="csj-btn">Ajouter (avec vérification des conflits)</button></div>
+  </form>
+</div>
+{% endif %}
+
+<form method="get" style="margin-bottom: 1rem; display:flex; gap:0.75rem; flex-wrap: wrap; align-items:end;">
+  <div class="csj-field" style="margin-bottom:0;">
+    <label for="classe_id">Classe</label>
+    <select name="classe_id" id="classe_id" onchange="this.form.submit()">
+      <option value="">— Toutes —</option>
+      {% for c in classes %}
+      <option value="{{ c.id }}" {{ "selected" if selected_classe_id == c.id else "" }}>{{ c.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="csj-field" style="margin-bottom:0;">
+    <label for="teacher_id">Enseignant</label>
+    <select name="teacher_id" id="teacher_id" onchange="this.form.submit()">
+      <option value="">— Tous —</option>
+      {% for t in teachers %}
+      <option value="{{ t.id }}" {{ "selected" if selected_teacher_id == t.id else "" }}>{{ t.nom }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="csj-field" style="margin-bottom:0;">
+    <label for="room_id">Salle</label>
+    <select name="room_id" id="room_id" onchange="this.form.submit()">
+      <option value="">— Toutes —</option>
+      {% for r in rooms %}
+      <option value="{{ r.id }}" {{ "selected" if selected_room_id == r.id else "" }}>{{ r.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <a href="{{ url_for('direction_etudes.schedule_pdf', classe_id=selected_classe_id, teacher_id=selected_teacher_id, room_id=selected_room_id) }}" class="csj-btn secondary">Imprimer / PDF</a>
+</form>
+
+<div class="csj-table-wrap">
+  <table class="csj-table">
+    <thead><tr><th>Jour</th><th>Heure</th><th>Classe</th><th>Matière</th><th>Enseignant</th><th>Salle</th>{% if can_manage %}<th></th>{% endif %}</tr></thead>
+    <tbody>
+      {% for entry in entries %}
+      <tr>
+        <td>{{ entry.day }}</td>
+        <td>{{ entry.start_time.strftime("%H:%M") }} – {{ entry.end_time.strftime("%H:%M") }}</td>
+        <td>{{ entry.classe.name }}</td>
+        <td>{{ entry.subject.name }}</td>
+        <td>{{ entry.teacher.nom }}</td>
+        <td>{{ entry.room.name if entry.room else "—" }}</td>
+        {% if can_manage %}
+        <td>
+          <form method="post" action="{{ url_for('direction_etudes.schedule_delete', schedule_id=entry.id) }}" style="display:inline;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="csj-btn secondary">Supprimer</button>
+          </form>
+        </td>
+        {% endif %}
+      </tr>
+      {% else %}
+      <tr><td colspan="7" style="color: var(--csj-muted);">Aucun créneau.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+{% endblock %}

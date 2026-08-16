@@ -1,0 +1,114 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Bibliothèque numérique — Enseignant{% endblock %}
+{% block dashboard_content %}
+<h1>Bibliothèque numérique</h1>
+
+{% if not material_form %}
+<p style="color: var(--csj-muted);">
+  Aucune classe/matière ne vous est encore affectée dans l'emploi du temps. Contactez la
+  Direction des Études.
+</p>
+{% else %}
+<div class="csj-panel">
+  <h2>Nouveau support de cours</h2>
+  <form method="post" enctype="multipart/form-data">
+    {{ material_form.csrf_token }}
+    <input type="hidden" name="form_name" value="material">
+    <div class="csj-field">{{ material_form.classe_subject.label }} {{ material_form.classe_subject() }}</div>
+    <div class="csj-field">
+      {{ material_form.title.label }} {{ material_form.title() }}
+      {% for error in material_form.title.errors %}<p class="csj-errors">{{ error }}</p>{% endfor %}
+    </div>
+    <div class="csj-field">{{ material_form.category.label }} {{ material_form.category() }}</div>
+    <div class="csj-field">{{ material_form.description.label }} {{ material_form.description(rows=3) }}</div>
+    <div class="csj-field">
+      {{ material_form.file.label }} {{ material_form.file() }}
+      {% for error in material_form.file.errors %}<p class="csj-errors">{{ error }}</p>{% endfor %}
+    </div>
+    <div class="csj-form-actions"><button type="submit" class="csj-btn">Ajouter</button></div>
+  </form>
+</div>
+
+<div class="csj-table-wrap">
+  <table class="csj-table">
+    <thead><tr><th>Titre</th><th>Classe</th><th>Matière</th><th>Catégorie</th><th>Fichier</th><th>Déposé le</th><th></th></tr></thead>
+    <tbody>
+      {% for m in materials %}
+      <tr>
+        <td>{{ m.title }}</td>
+        <td>{{ m.classe.name }}</td>
+        <td>{{ m.subject.name }}</td>
+        <td>{{ m.CATEGORY_LABELS[m.category] }}</td>
+        <td>
+          {% if files_by_material.get(m.id) %}
+          <a href="{{ url_for('enseignant.library_file_download', document_id=files_by_material[m.id].id) }}">Télécharger</a>
+          {% else %}—{% endif %}
+        </td>
+        <td>{{ m.created_at.strftime("%d/%m/%Y") }}</td>
+        <td>
+          <form method="post" action="{{ url_for('enseignant.material_delete', material_id=m.id) }}" onsubmit="return confirm('Supprimer ce support ?');">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="csj-btn secondary">Supprimer</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" style="color: var(--csj-muted);">Aucun support de cours déposé.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="csj-panel">
+  <h2>Nouveau devoir</h2>
+  <form method="post" enctype="multipart/form-data">
+    {{ homework_form.csrf_token }}
+    <input type="hidden" name="form_name" value="homework">
+    <div class="csj-field">{{ homework_form.classe_subject.label }} {{ homework_form.classe_subject() }}</div>
+    <div class="csj-field">
+      {{ homework_form.title.label }} {{ homework_form.title() }}
+      {% for error in homework_form.title.errors %}<p class="csj-errors">{{ error }}</p>{% endfor %}
+    </div>
+    <div class="csj-field">
+      {{ homework_form.due_date.label }} {{ homework_form.due_date() }}
+      {% for error in homework_form.due_date.errors %}<p class="csj-errors">{{ error }}</p>{% endfor %}
+    </div>
+    <div class="csj-field">{{ homework_form.instructions.label }} {{ homework_form.instructions(rows=3) }}</div>
+    <div class="csj-field">
+      {{ homework_form.file.label }} {{ homework_form.file() }}
+      {% for error in homework_form.file.errors %}<p class="csj-errors">{{ error }}</p>{% endfor %}
+    </div>
+    <div class="csj-form-actions"><button type="submit" class="csj-btn">Ajouter</button></div>
+  </form>
+</div>
+
+<div class="csj-table-wrap">
+  <table class="csj-table">
+    <thead><tr><th>Titre</th><th>Classe</th><th>Matière</th><th>À rendre pour le</th><th>Fichier</th><th></th></tr></thead>
+    <tbody>
+      {% for h in homeworks %}
+      <tr>
+        <td>{{ h.title }}</td>
+        <td>{{ h.classe.name }}</td>
+        <td>{{ h.subject.name }}</td>
+        <td>{{ h.due_date.strftime("%d/%m/%Y") }}</td>
+        <td>
+          {% if files_by_homework.get(h.id) %}
+          <a href="{{ url_for('enseignant.library_file_download', document_id=files_by_homework[h.id].id) }}">Télécharger</a>
+          {% else %}—{% endif %}
+        </td>
+        <td>
+          <form method="post" action="{{ url_for('enseignant.homework_delete', homework_id=h.id) }}" onsubmit="return confirm('Supprimer ce devoir ?');">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="csj-btn secondary">Supprimer</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" style="color: var(--csj-muted);">Aucun devoir donné.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+{% endblock %}

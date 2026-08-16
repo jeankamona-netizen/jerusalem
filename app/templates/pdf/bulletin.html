@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @page { size: A4; margin: 2cm; }
+  body { font-family: Helvetica, Arial, sans-serif; font-size: 11pt; color: #1f2a24; }
+  .header { text-align: center; margin-bottom: 10px; }
+  .header h1 { font-size: 15pt; margin: 0; color: #0b3d2e; }
+  .header p { margin: 2px 0; font-size: 9pt; color: #5c6b63; }
+  .title { text-align: center; font-size: 13pt; font-weight: bold; margin: 14px 0; text-transform: uppercase; }
+  table.info { width: 100%; border-collapse: collapse; margin-bottom: 14px; }
+  table.info td { padding: 3px 6px; font-size: 10pt; }
+  table.info td.label { color: #5c6b63; width: 30%; }
+  table.grades { width: 100%; border-collapse: collapse; margin-top: 10px; }
+  table.grades th { background: #0b3d2e; color: #fff; padding: 6px; font-size: 9pt; text-align: left; }
+  table.grades td { border-bottom: 1px solid #dde3df; padding: 6px; font-size: 10pt; }
+  .overall { margin-top: 18px; text-align: center; border: 1px solid #0b3d2e; padding: 10px; }
+  .overall .value { font-size: 15pt; font-weight: bold; color: #0b3d2e; }
+  .signatures { margin-top: 40px; width: 100%; }
+  .signatures td { width: 33%; text-align: center; font-size: 9pt; padding-top: 30px; border-top: 1px solid #1f2a24; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <h1>{{ school.name }}</h1>
+    <p>{{ school.city }}, {{ school.province }}, {{ school.country }}</p>
+  </div>
+
+  <div class="title">Bulletin scolaire — {{ term_label }}</div>
+
+  <table class="info">
+    <tr>
+      <td class="label">Élève</td><td>{{ student.full_name }}</td>
+      <td class="label">Matricule</td><td>{{ student.matricule or "—" }}</td>
+    </tr>
+    <tr>
+      <td class="label">Année scolaire</td><td>{{ school_year.label }}</td>
+      <td class="label">Date</td><td>{{ report_card.generated_at.strftime("%d/%m/%Y") if report_card.generated_at else "" }}</td>
+    </tr>
+  </table>
+
+  <table class="grades">
+    <thead><tr><th>Matière</th><th>Coefficient</th><th>Moyenne /20</th></tr></thead>
+    <tbody>
+      {% for row in subject_averages %}
+      <tr>
+        <td>{{ row.subject.name }}</td>
+        <td>{{ row.subject.default_coefficient }}</td>
+        <td>{{ "%.2f"|format(row.average) if row.average is not none else "—" }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="3">Aucune note enregistrée pour ce trimestre.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="overall">
+    <div>Moyenne générale</div>
+    <div class="value">{{ "%.2f"|format(overall_average) if overall_average is not none else "—" }} / 20</div>
+  </div>
+
+  <table class="signatures">
+    <tr>
+      <td>Titulaire de classe</td>
+      <td>Directeur des Études</td>
+      <td>Préfet des Études</td>
+    </tr>
+  </table>
+</body>
+</html>

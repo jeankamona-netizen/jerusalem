@@ -1,0 +1,219 @@
+:root {
+  /* Couleurs reprises du blason CS Jérusalem (vert des bandes/lettrage, rouge de la
+     flamme méthodiste) — voir School.primary_color / School.secondary_color pour la
+     configuration en base (brief section 4 : couleurs institutionnelles configurables). */
+  --csj-primary: #1f7a3d;
+  --csj-secondary: #d62e1f;
+  --csj-bg: #f5f6f5;
+  --csj-surface: #ffffff;
+  --csj-text: #1f2a24;
+  --csj-muted: #5c6b63;
+  --csj-border: #dde3df;
+  --csj-danger: #b3261e;
+  --csj-success: #1e6b3c;
+  font-size: 16px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Roboto, -apple-system, sans-serif;
+  background: var(--csj-bg);
+  color: var(--csj-text);
+  line-height: 1.5;
+}
+
+a { color: var(--csj-primary); }
+
+.csj-topbar {
+  background: var(--csj-primary);
+  color: #fff;
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.csj-topbar .brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 700;
+  color: #fff;
+  text-decoration: none;
+}
+
+.csj-topbar .brand .badge {
+  width: 2.2rem;
+  height: 2.2rem;
+  object-fit: contain;
+  display: block;
+}
+
+.csj-topbar nav a {
+  color: #fff;
+  text-decoration: none;
+  margin-left: 1rem;
+  font-size: 0.95rem;
+}
+
+.csj-notif-badge {
+  display: inline-block;
+  background: var(--csj-secondary);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  min-width: 1.1rem;
+  height: 1.1rem;
+  line-height: 1.1rem;
+  border-radius: 999px;
+  text-align: center;
+  padding: 0 0.25rem;
+  margin-left: 0.3rem;
+  vertical-align: middle;
+}
+
+.csj-notif-list { list-style: none; padding: 0; margin: 0; }
+.csj-notif-item {
+  display: block;
+  background: var(--csj-surface);
+  border: 1px solid var(--csj-border);
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  margin-bottom: 0.6rem;
+}
+.csj-notif-item.unread { border-left: 4px solid var(--csj-secondary); }
+.csj-notif-item .title { font-weight: 600; }
+.csj-notif-item .meta { color: var(--csj-muted); font-size: 0.8rem; margin-top: 0.2rem; }
+
+.csj-flash {
+  max-width: 500px;
+  margin: 1rem auto;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+.csj-flash.error { background: #fbe9e7; color: var(--csj-danger); border: 1px solid var(--csj-danger); }
+.csj-flash.info { background: #eaf3ee; color: var(--csj-success); border: 1px solid var(--csj-success); }
+
+.csj-auth-card {
+  max-width: 380px;
+  margin: 3rem auto;
+  background: var(--csj-surface);
+  border: 1px solid var(--csj-border);
+  border-radius: 10px;
+  padding: 2rem;
+}
+.csj-auth-card h1 { font-size: 1.3rem; margin-top: 0; }
+.csj-field { margin-bottom: 1rem; }
+.csj-field label { display: block; font-size: 0.9rem; margin-bottom: 0.3rem; color: var(--csj-muted); }
+.csj-field input[type="text"],
+.csj-field input[type="email"],
+.csj-field input[type="password"] {
+  width: 100%;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--csj-border);
+  border-radius: 6px;
+  font-size: 1rem;
+}
+.csj-btn {
+  display: inline-block;
+  background: var(--csj-primary);
+  color: #fff;
+  border: none;
+  padding: 0.65rem 1.1rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+.csj-btn.secondary { background: transparent; color: var(--csj-primary); border: 1px solid var(--csj-primary); }
+.csj-errors { color: var(--csj-danger); font-size: 0.85rem; margin: 0.2rem 0 0; padding-left: 1rem; }
+
+.csj-app {
+  display: flex;
+  min-height: calc(100vh - 56px);
+}
+.csj-sidebar {
+  width: 230px;
+  background: var(--csj-surface);
+  border-right: 1px solid var(--csj-border);
+  padding: 1rem 0;
+  flex-shrink: 0;
+}
+.csj-sidebar a {
+  display: block;
+  padding: 0.6rem 1.25rem;
+  color: var(--csj-text);
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+.csj-sidebar a:hover, .csj-sidebar a.active { background: var(--csj-bg); color: var(--csj-primary); font-weight: 600; }
+.csj-main { flex: 1; padding: 1.5rem; min-width: 0; }
+
+.csj-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+.csj-card { background: var(--csj-surface); border: 1px solid var(--csj-border); border-radius: 10px; padding: 1.1rem; }
+.csj-card .value { font-size: 1.8rem; font-weight: 700; color: var(--csj-primary); }
+.csj-card .label { color: var(--csj-muted); font-size: 0.85rem; }
+.csj-card .demo-tag { display: inline-block; margin-top: 0.4rem; font-size: 0.7rem; background: #fff4d6; color: #8a6d00; padding: 0.1rem 0.4rem; border-radius: 4px; }
+
+.csj-table-wrap { overflow-x: auto; background: var(--csj-surface); border: 1px solid var(--csj-border); border-radius: 8px; }
+.csj-table { width: 100%; border-collapse: collapse; min-width: 480px; }
+.csj-table th { text-align: left; background: var(--csj-bg); padding: 0.6rem 0.8rem; font-size: 0.85rem; color: var(--csj-muted); }
+.csj-table td { padding: 0.6rem 0.8rem; border-top: 1px solid var(--csj-border); font-size: 0.9rem; }
+.csj-table .balance-ok { color: var(--csj-success); font-weight: 600; }
+.csj-table .balance-due { color: var(--csj-danger); font-weight: 600; }
+
+.csj-panel { background: var(--csj-surface); border: 1px solid var(--csj-border); border-radius: 10px; padding: 1.25rem; margin-bottom: 1.5rem; max-width: 480px; }
+.csj-panel h2 { margin-top: 0; font-size: 1.05rem; }
+.csj-form-actions { margin-top: 0.5rem; }
+.csj-field select, .csj-field textarea {
+  width: 100%;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--csj-border);
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+}
+.csj-section { margin-bottom: 2rem; }
+.csj-pill { display: inline-block; padding: 0.15rem 0.55rem; border-radius: 999px; font-size: 0.75rem; }
+.csj-pill.ok { background: #eaf3ee; color: var(--csj-success); }
+.csj-pill.warn { background: #fff4d6; color: #8a6d00; }
+.csj-pill.danger { background: #fbe9e7; color: var(--csj-danger); }
+
+.csj-carousel {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--csj-border);
+}
+.csj-carousel img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  animation: csj-carousel-fade 32s infinite;
+}
+@keyframes csj-carousel-fade {
+  0% { opacity: 0; }
+  3% { opacity: 1; }
+  9% { opacity: 1; }
+  12.5% { opacity: 0; }
+  100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .csj-carousel img { animation: none; opacity: 0; }
+  .csj-carousel img:first-child { opacity: 1; }
+}
+
+@media (max-width: 768px) {
+  .csj-app { flex-direction: column; }
+  .csj-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--csj-border); display: flex; overflow-x: auto; padding: 0.5rem; }
+  .csj-sidebar a { padding: 0.5rem 0.8rem; white-space: nowrap; }
+  .csj-carousel { height: 200px; }
+}

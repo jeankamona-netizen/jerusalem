@@ -1,0 +1,10 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Tableau de bord — Enseignant{% endblock %}
+{% block dashboard_content %}
+<h1>Bonjour {{ teacher_profile.nom if teacher_profile else current_user.email }}</h1>
+<p style="color: var(--csj-muted);">Vos cours, classes et tâches du jour.</p>
+<div class="csj-cards">
+  <div class="csj-card"><div class="value">{{ stats.cours_aujourd_hui }}</div><div class="label">Cours aujourd'hui</div></div>
+  <div class="csj-card"><div class="value">{{ stats.mes_classes }}</div><div class="label">Mes classes</div></div>
+</div>
+{% endblock %}

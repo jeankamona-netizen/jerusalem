@@ -1,0 +1,34 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Notes — {{ assessment.subject.name }}{% endblock %}
+{% block dashboard_content %}
+<h1>Notes — {{ assessment.classe.name }} — {{ assessment.subject.name }}</h1>
+<p style="color: var(--csj-muted);">
+  {{ assessment.assessment_type.label }} du {{ assessment.date.strftime("%d/%m/%Y") }} —
+  coefficient {{ assessment.coefficient }} — sur {{ assessment.max_score }}
+</p>
+
+<form method="post">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="csj-table-wrap">
+    <table class="csj-table">
+      <thead><tr><th>Élève</th><th>Note (/{{ assessment.max_score }})</th></tr></thead>
+      <tbody>
+        {% for student in students %}
+        <tr>
+          <td>{{ student.full_name }}</td>
+          <td>
+            <input type="number" step="0.01" min="0" max="{{ assessment.max_score }}"
+                   name="score_{{ student.id }}"
+                   value="{{ existing_grades[student.id].score if student.id in existing_grades and existing_grades[student.id].score is not none else '' }}"
+                   style="width: 6rem; padding: 0.4rem;">
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="2" style="color: var(--csj-muted);">Aucun élève actif dans cette classe.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="csj-form-actions"><button type="submit" class="csj-btn">Enregistrer les notes</button></div>
+</form>
+{% endblock %}

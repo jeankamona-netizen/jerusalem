@@ -1,0 +1,31 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Convocations — {{ student.full_name }}{% endblock %}
+{% block dashboard_content %}
+<h1>Convocations — {{ student.full_name }}</h1>
+
+<div class="csj-table-wrap">
+  <table class="csj-table">
+    <thead><tr><th>Motif</th><th>Date</th><th>Lieu</th><th>Statut</th><th></th></tr></thead>
+    <tbody>
+      {% for c in convocations %}
+      <tr>
+        <td>{{ c.motif }}</td>
+        <td>{{ c.date.strftime("%d/%m/%Y") }} {{ c.heure.strftime("%H:%M") }}</td>
+        <td>{{ c.lieu }}</td>
+        <td><span class="csj-pill {{ 'ok' if c.status in ('confirmee','terminee') else 'warn' }}">{{ c.STATUS_LABELS[c.status] }}</span></td>
+        <td>
+          {% if c.status not in ("confirmee", "terminee") %}
+          <form method="post" action="{{ url_for('parent.convocation_confirm', convocation_id=c.id) }}" style="display:inline;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="csj-btn">Confirmer ma présence</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" style="color: var(--csj-muted);">Aucune convocation.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

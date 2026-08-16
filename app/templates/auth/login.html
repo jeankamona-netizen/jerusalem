@@ -1,0 +1,27 @@
+{% extends "layouts/base.html" %}
+{% block title %}Connexion — CS Jérusalem{% endblock %}
+{% block content %}
+<div class="csj-auth-card">
+  <h1>Connexion professionnelle</h1>
+  <p style="color: var(--csj-muted); font-size: 0.9rem;">Réservé au personnel, aux parents et aux élèves de CS Jérusalem.</p>
+  <form method="post">
+    {{ form.csrf_token }}
+    <div class="csj-field">
+      {{ form.email.label }}
+      {{ form.email(placeholder="vous@csjerusalem.cd") }}
+      {% for error in form.email.errors %}<p class="csj-errors">{{ error }}</p>{% endfor %}
+    </div>
+    <div class="csj-field">
+      {{ form.password.label }}
+      {{ form.password() }}
+      {% for error in form.password.errors %}<p class="csj-errors">{{ error }}</p>{% endfor %}
+    </div>
+    <div class="csj-field">
+      <label style="display:flex; align-items:center; gap:0.4rem;">
+        {{ form.remember_me() }} {{ form.remember_me.label.text }}
+      </label>
+    </div>
+    <button type="submit" class="csj-btn">Se connecter</button>
+  </form>
+</div>
+{% endblock %}

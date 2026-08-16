@@ -1,0 +1,19 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Signaler un incident — Discipline{% endblock %}
+{% block dashboard_content %}
+<h1>Signaler un incident</h1>
+<div class="csj-panel">
+  <form method="post">
+    {{ form.csrf_token }}
+    <div class="csj-field">{{ form.student_profile_id.label }} {{ form.student_profile_id() }}</div>
+    <div class="csj-field">{{ form.date.label }} {{ form.date() }}
+      {% for e in form.date.errors %}<p class="csj-errors">{{ e }}</p>{% endfor %}
+    </div>
+    <div class="csj-field">{{ form.severity.label }} {{ form.severity() }}</div>
+    <div class="csj-field">{{ form.description.label }} {{ form.description(rows=4) }}
+      {% for e in form.description.errors %}<p class="csj-errors">{{ e }}</p>{% endfor %}
+    </div>
+    <div class="csj-form-actions"><button type="submit" class="csj-btn">Enregistrer l'incident</button></div>
+  </form>
+</div>
+{% endblock %}

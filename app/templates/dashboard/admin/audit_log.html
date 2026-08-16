@@ -1,0 +1,62 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Journal d'audit — Administration{% endblock %}
+{% block dashboard_content %}
+<h1>Journal d'audit</h1>
+<p style="color: var(--csj-muted);">{{ pagination.total }} entrée(s) au total.</p>
+
+<form method="get" style="display:flex; gap:0.75rem; flex-wrap:wrap; align-items:end; margin-bottom:1rem;">
+  <div class="csj-field" style="margin-bottom:0;">
+    <label for="action">Action</label>
+    <select name="action" id="action" onchange="this.form.submit()">
+      <option value="">— Toutes —</option>
+      {% for a in distinct_actions %}
+      <option value="{{ a }}" {{ "selected" if a == selected_action else "" }}>{{ a }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="csj-field" style="margin-bottom:0;">
+    <label for="user_id">Compte</label>
+    <select name="user_id" id="user_id" onchange="this.form.submit()">
+      <option value="">— Tous —</option>
+      {% for u in users_with_entries %}
+      <option value="{{ u.id }}" {{ "selected" if selected_user_id == u.id else "" }}>{{ u.email }}</option>
+      {% endfor %}
+    </select>
+  </div>
+</form>
+
+<div class="csj-table-wrap">
+  <table class="csj-table">
+    <thead><tr><th>Date/heure</th><th>Compte</th><th>Action</th><th>Entité</th><th>IP</th><th>Détail</th></tr></thead>
+    <tbody>
+      {% for entry in entries %}
+      <tr>
+        <td>{{ entry.created_at.strftime("%d/%m/%Y %H:%M:%S") }}</td>
+        <td>{{ entry.user.email if entry.user else "—" }}</td>
+        <td>{{ entry.action }}</td>
+        <td>{{ entry.entity_type ~ " #" ~ entry.entity_id if entry.entity_type else "—" }}</td>
+        <td>{{ entry.ip or "—" }}</td>
+        <td>
+          {% if entry.old_value is not none %}<span title="Ancienne valeur">avant: {{ entry.old_value }}</span>{% endif %}
+          {% if entry.new_value is not none %}<span title="Nouvelle valeur">après: {{ entry.new_value }}</span>{% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" style="color: var(--csj-muted);">Aucune entrée.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% if pagination.pages > 1 %}
+<div style="display:flex; gap:0.5rem; margin-top:1rem; align-items:center;">
+  {% if pagination.has_prev %}
+  <a href="{{ url_for('admin.audit_log', page=pagination.prev_num, action=selected_action, user_id=selected_user_id) }}" class="csj-btn secondary">← Précédent</a>
+  {% endif %}
+  <span style="color: var(--csj-muted);">Page {{ pagination.page }} / {{ pagination.pages }}</span>
+  {% if pagination.has_next %}
+  <a href="{{ url_for('admin.audit_log', page=pagination.next_num, action=selected_action, user_id=selected_user_id) }}" class="csj-btn secondary">Suivant →</a>
+  {% endif %}
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Paiement — {{ student.full_name }}{% endblock %}
+{% block dashboard_content %}
+<h1>Paiement — {{ student.full_name }}</h1>
+<p style="color: var(--csj-muted);">Dû : {{ "%.2f"|format(due) }} · Payé : {{ "%.2f"|format(paid) }} · Solde : {{ "%.2f"|format(balance) }}</p>
+
+{% if fees %}
+<div class="csj-panel">
+  <form method="post">
+    {{ form.csrf_token }}
+    <div class="csj-field">
+      {{ form.fee_id.label }} {{ form.fee_id() }}
+    </div>
+    <div class="csj-field">
+      {{ form.amount.label }} {{ form.amount() }}
+      {% for error in form.amount.errors %}<p class="csj-errors">{{ error }}</p>{% endfor %}
+    </div>
+    <div class="csj-field">
+      {{ form.currency.label }} {{ form.currency() }}
+    </div>
+    <div class="csj-field">
+      {{ form.method.label }} {{ form.method() }}
+    </div>
+    <div class="csj-field">
+      {{ form.reference.label }} {{ form.reference(placeholder="Optionnel") }}
+    </div>
+    <div class="csj-field">
+      {{ form.payment_date.label }} {{ form.payment_date() }}
+      {% for error in form.payment_date.errors %}<p class="csj-errors">{{ error }}</p>{% endfor %}
+    </div>
+    <div class="csj-field">
+      {{ form.comment.label }} {{ form.comment(rows=2) }}
+    </div>
+    <div class="csj-form-actions">
+      <button type="submit" class="csj-btn">Enregistrer le paiement et générer le reçu</button>
+    </div>
+  </form>
+</div>
+{% else %}
+<p>Aucun frais configuré pour cet élève sur l'année en cours. Créez d'abord un type de frais.</p>
+{% endif %}
+{% endblock %}

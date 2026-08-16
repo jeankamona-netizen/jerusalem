@@ -1,0 +1,36 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Nouvelle convocation — Discipline{% endblock %}
+{% block dashboard_content %}
+<h1>Nouvelle convocation</h1>
+
+<form method="get" style="margin-bottom:1.5rem; max-width:400px;">
+  <div class="csj-field">
+    <label for="student_id">Élève</label>
+    <select name="student_id" id="student_id" onchange="this.form.submit()">
+      <option value="">— Choisir un élève —</option>
+      {% for value, label in student_choices %}
+      <option value="{{ value }}" {{ "selected" if student and student.id == value else "" }}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+</form>
+
+{% if student and form %}
+<div class="csj-panel">
+  <h2>Convoquer pour {{ student.full_name }}</h2>
+  <form method="post">
+    {{ form.csrf_token }}
+    <input type="hidden" name="student_id" value="{{ student.id }}">
+    <div class="csj-field">{{ form.parent_profile_id.label }} {{ form.parent_profile_id() }}</div>
+    <div class="csj-field">{{ form.motif.label }} {{ form.motif() }}
+      {% for e in form.motif.errors %}<p class="csj-errors">{{ e }}</p>{% endfor %}
+    </div>
+    <div class="csj-field">{{ form.date.label }} {{ form.date() }}</div>
+    <div class="csj-field">{{ form.heure.label }} {{ form.heure() }}</div>
+    <div class="csj-field">{{ form.lieu.label }} {{ form.lieu() }}</div>
+    <div class="csj-field">{{ form.commentaire.label }} {{ form.commentaire(rows=2) }}</div>
+    <div class="csj-form-actions"><button type="submit" class="csj-btn">Créer la convocation</button></div>
+  </form>
+</div>
+{% endif %}
+{% endblock %}

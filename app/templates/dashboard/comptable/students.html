@@ -1,0 +1,24 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Élèves & Paiements — Comptable{% endblock %}
+{% block dashboard_content %}
+<h1>Élèves & Paiements{% if school_year %} — {{ school_year.label }}{% endif %}</h1>
+
+<div class="csj-table-wrap">
+  <table class="csj-table">
+    <thead><tr><th>Élève</th><th>Dû</th><th>Payé</th><th>Solde</th><th></th></tr></thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        <td>{{ row.student.full_name }}</td>
+        <td>{{ "%.2f"|format(row.due) }}</td>
+        <td>{{ "%.2f"|format(row.paid) }}</td>
+        <td class="{{ 'balance-ok' if row.balance <= 0 else 'balance-due' }}">{{ "%.2f"|format(row.balance) }}</td>
+        <td><a href="{{ url_for('comptable.record_payment', student_id=row.student.id) }}" class="csj-btn secondary">Enregistrer un paiement</a></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" style="color: var(--csj-muted);">Aucun élève actif pour cette année.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

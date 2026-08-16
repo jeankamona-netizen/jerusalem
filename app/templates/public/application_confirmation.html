@@ -1,0 +1,16 @@
+{% extends "layouts/base.html" %}
+{% block title %}Dossier soumis — CS Jérusalem{% endblock %}
+{% block content %}
+<section style="max-width: 520px; margin: 3rem auto; padding: 0 1.25rem; text-align:center;">
+  <h1>Dossier soumis avec succès</h1>
+  <p style="color: var(--csj-muted);">Conservez ce numéro : il vous sera demandé pour tout suivi de votre dossier.</p>
+  <div class="csj-card" style="display:inline-block; padding: 1.5rem 2.5rem; margin: 1rem 0;">
+    <div class="label">Numéro de dossier</div>
+    <div class="value" style="font-size:1.4rem;">{{ application.number }}</div>
+  </div>
+  <p><strong>Élève :</strong> {{ application.full_name }}</p>
+  <p><strong>Classe demandée :</strong> {{ application.classe_demandee.name if application.classe_demandee else "—" }}</p>
+  <p><strong>Statut :</strong> {{ application.STATUS_LABELS[application.status] }}</p>
+  <a href="{{ url_for('public.home') }}" class="csj-btn" style="margin-top:1rem;">Retour à l'accueil</a>
+</section>
+{% endblock %}

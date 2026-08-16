@@ -1,0 +1,29 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Tableau de bord — Parent{% endblock %}
+{% block dashboard_content %}
+<h1>Mes enfants</h1>
+<p style="color: var(--csj-muted);">Vous ne voyez ici que les enfants qui vous sont réellement associés.</p>
+{% if children %}
+<div class="csj-cards">
+  {% for child in children %}
+  <div class="csj-card">
+    <div class="label" style="font-size:1rem; font-weight:600; color: var(--csj-text);">{{ child.full_name }}</div>
+    {% set att = attendance_by_child.get(child.id) %}
+    {% if att %}
+    <div class="label">{{ att.absences }} absence(s), {{ att.retards }} retard(s) cette année</div>
+    {% endif %}
+    {% set bal = balance_by_child.get(child.id) %}
+    {% if bal %}
+    <div class="label">Solde : {{ "%.0f"|format(bal.balance) }} {{ school.currency_default if school else "" }}{% if bal.balance > 0 %} restant dû{% endif %}</div>
+    {% endif %}
+    <a href="{{ url_for('parent.child_notes', student_id=child.id) }}" class="csj-btn secondary" style="margin-top:0.5rem; display:inline-block;">Voir les notes</a>
+    <a href="{{ url_for('parent.child_schedule', student_id=child.id) }}" class="csj-btn secondary" style="margin-top:0.5rem; display:inline-block;">Emploi du temps</a>
+    <a href="{{ url_for('parent.child_convocations', student_id=child.id) }}" class="csj-btn secondary" style="margin-top:0.5rem; display:inline-block;">Convocations</a>
+    <a href="{{ url_for('parent.child_library', student_id=child.id) }}" class="csj-btn secondary" style="margin-top:0.5rem; display:inline-block;">Bibliothèque</a>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<p>Aucun enfant associé à votre compte pour le moment.</p>
+{% endif %}
+{% endblock %}

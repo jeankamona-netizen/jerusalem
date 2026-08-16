@@ -1,0 +1,9 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Tableau de bord — Super Admin{% endblock %}
+{% block dashboard_content %}
+<h1>Administration système</h1>
+<div class="csj-cards">
+  <div class="csj-card"><div class="value">{{ stats.utilisateurs }}</div><div class="label">Comptes utilisateurs</div></div>
+  <div class="csj-card"><div class="value">{{ stats.roles }}</div><div class="label">Rôles configurés</div></div>
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Préinscriptions — Préfet{% endblock %}
+{% block dashboard_content %}
+<h1>Préinscriptions</h1>
+
+<div style="margin-bottom:1rem; display:flex; gap:0.5rem; flex-wrap:wrap;">
+  <a href="{{ url_for('prefet.applications') }}" class="csj-btn {{ 'secondary' if selected_status else '' }}">Tous</a>
+  {% for code, label in [("soumis","Soumis"), ("en_examen","En examen"), ("incomplet","Incomplet"), ("accepte","Accepté"), ("refuse","Refusé")] %}
+  <a href="{{ url_for('prefet.applications', status=code) }}" class="csj-btn {{ 'secondary' if selected_status != code else '' }}">{{ label }}</a>
+  {% endfor %}
+</div>
+
+<div class="csj-table-wrap">
+  <table class="csj-table">
+    <thead><tr><th>Dossier</th><th>Élève</th><th>Classe demandée</th><th>Parent</th><th>Statut</th><th>Soumis le</th><th></th></tr></thead>
+    <tbody>
+      {% for app in applications %}
+      <tr>
+        <td>{{ app.number }}</td>
+        <td>{{ app.full_name }}</td>
+        <td>{{ app.classe_demandee.name if app.classe_demandee else "—" }}</td>
+        <td>{{ app.parent_nom }} ({{ app.parent_telephone }})</td>
+        <td><span class="csj-pill {{ 'ok' if app.status == 'accepte' else ('danger' if app.status == 'refuse' else 'warn') }}">{{ app.STATUS_LABELS[app.status] }}</span></td>
+        <td>{{ app.created_at.strftime("%d/%m/%Y") }}</td>
+        <td><a href="{{ url_for('prefet.application_detail', application_id=app.id) }}" class="csj-btn secondary">Instruire</a></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" style="color: var(--csj-muted);">Aucun dossier.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

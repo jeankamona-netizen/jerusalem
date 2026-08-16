@@ -1,0 +1,16 @@
+{% extends "layouts/base.html" %}
+{% block title %}{{ announcement.title }} — CS Jérusalem{% endblock %}
+{% block content %}
+<section style="max-width: 780px; margin: 3rem auto; padding: 0 1.25rem;">
+  <p><a href="{{ url_for('public.news') }}">← Toutes les actualités</a></p>
+  {% if image %}
+  <img src="{{ url_for('public.news_image', document_id=image.id) }}" alt="{{ announcement.title }}" style="width:100%; max-height:360px; object-fit:cover; border-radius:8px; margin-bottom:1.2rem;">
+  {% endif %}
+  <span class="csj-pill">{{ announcement.CATEGORY_LABELS[announcement.category] }}</span>
+  <h1 style="margin-top:0.4rem;">{{ announcement.title }}</h1>
+  <p style="color: var(--csj-muted); font-size:0.9rem;">
+    {{ announcement.published_at.strftime("%d/%m/%Y") if announcement.published_at else "" }}
+  </p>
+  <p style="white-space: pre-line;">{{ announcement.body }}</p>
+</section>
+{% endblock %}

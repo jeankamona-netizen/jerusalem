@@ -1,0 +1,43 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Frais scolaires — Comptable{% endblock %}
+{% block dashboard_content %}
+<h1>Frais scolaires — {{ school_year.label }}</h1>
+
+<div class="csj-panel">
+  <h2>Créer un type de frais</h2>
+  <form method="post">
+    {{ form.csrf_token }}
+    <div class="csj-field">
+      {{ form.code.label }} {{ form.code(placeholder="FRAIS_SCOLAIRE") }}
+      {% for error in form.code.errors %}<p class="csj-errors">{{ error }}</p>{% endfor %}
+    </div>
+    <div class="csj-field">
+      {{ form.label.label }} {{ form.label(placeholder="Frais scolaires 2025-2026") }}
+      {% for error in form.label.errors %}<p class="csj-errors">{{ error }}</p>{% endfor %}
+    </div>
+    <div class="csj-field">
+      {{ form.default_amount.label }} {{ form.default_amount() }}
+      {% for error in form.default_amount.errors %}<p class="csj-errors">{{ error }}</p>{% endfor %}
+    </div>
+    <div class="csj-field">
+      {{ form.currency.label }} {{ form.currency() }}
+    </div>
+    <div class="csj-form-actions">
+      <button type="submit" class="csj-btn">Créer et appliquer à tous les élèves actifs</button>
+    </div>
+  </form>
+</div>
+
+<div class="csj-table-wrap">
+  <table class="csj-table">
+    <thead><tr><th>Code</th><th>Libellé</th><th>Montant par défaut</th></tr></thead>
+    <tbody>
+      {% for ft in fee_types %}
+      <tr><td>{{ ft.code }}</td><td>{{ ft.label }}</td><td>{{ "%.2f"|format(ft.default_amount) }} {{ ft.currency }}</td></tr>
+      {% else %}
+      <tr><td colspan="3" style="color: var(--csj-muted);">Aucun frais configuré pour cette année.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

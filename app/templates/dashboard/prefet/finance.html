@@ -1,0 +1,14 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Situation financière — Préfet{% endblock %}
+{% block dashboard_content %}
+<h1>Situation financière globale{% if school_year %} — {{ school_year.label }}{% endif %}</h1>
+<p style="color: var(--csj-muted);">Lecture seule : la gestion des paiements relève du Comptable.</p>
+<div class="csj-cards">
+  <div class="csj-card"><div class="value">{{ "%.0f"|format(totals.due) }}</div><div class="label">Montant attendu</div></div>
+  <div class="csj-card"><div class="value">{{ "%.0f"|format(totals.paid) }}</div><div class="label">Montant encaissé</div></div>
+  <div class="csj-card"><div class="value">{{ "%.0f"|format(totals.balance) }}</div><div class="label">Solde restant</div></div>
+</div>
+{% if not school_year %}
+<p style="color: var(--csj-danger);">Aucune année scolaire active.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Fiche disciplinaire — {{ student.full_name }}{% endblock %}
+{% block dashboard_content %}
+<h1>Fiche disciplinaire — {{ student.full_name }}</h1>
+<p style="color: var(--csj-muted);">Document confidentiel — accès restreint au Directeur de Discipline et au Préfet.</p>
+
+{% if summary %}
+<div class="csj-cards">
+  <div class="csj-card"><div class="value">{{ summary.absences }}</div><div class="label">Absences</div></div>
+  <div class="csj-card"><div class="value">{{ summary.retards }}</div><div class="label">Retards</div></div>
+  <div class="csj-card"><div class="value">{{ summary.avertissements }}</div><div class="label">Avertissements</div></div>
+  <div class="csj-card"><div class="value">{{ summary.sanctions }}</div><div class="label">Sanctions</div></div>
+  <div class="csj-card"><div class="value">{{ summary.exclusions }}</div><div class="label">Exclusions</div></div>
+</div>
+
+<div class="csj-panel" style="max-width:600px;">
+  <h2>Historique des incidents</h2>
+  {% if summary.incidents %}
+  <ul>
+    {% for incident in summary.incidents %}
+    <li><a href="{{ url_for('discipline.incident_detail', incident_id=incident.id) }}">{{ incident.date.strftime("%d/%m/%Y") }} — {{ incident.SEVERITY_LABELS[incident.severity] }}</a></li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p style="color: var(--csj-muted);">Aucun incident.</p>
+  {% endif %}
+</div>
+
+<div class="csj-panel" style="max-width:600px;">
+  <h2>Convocations</h2>
+  {% if summary.convocations %}
+  <ul>
+    {% for c in summary.convocations %}
+    <li>{{ c.date.strftime("%d/%m/%Y") }} — {{ c.motif }} ({{ c.STATUS_LABELS[c.status] }})</li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p style="color: var(--csj-muted);">Aucune convocation.</p>
+  {% endif %}
+</div>
+{% else %}
+<p style="color: var(--csj-danger);">Aucune année scolaire active.</p>
+{% endif %}
+{% endblock %}

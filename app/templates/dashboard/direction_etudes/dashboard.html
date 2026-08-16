@@ -1,0 +1,11 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Tableau de bord — Direction des Études{% endblock %}
+{% block dashboard_content %}
+<h1>Tableau de bord — Direction des Études</h1>
+<p style="color: var(--csj-muted);">Pilotage pédagogique de l'établissement.</p>
+<div class="csj-cards">
+  <div class="csj-card"><div class="value">{{ stats.classes }}</div><div class="label">Classes</div></div>
+  <div class="csj-card"><div class="value">{{ stats.matieres }}</div><div class="label">Matières</div></div>
+  <div class="csj-card"><div class="value">{{ stats.creneaux }}</div><div class="label">Créneaux à l'emploi du temps</div></div>
+</div>
+{% endblock %}

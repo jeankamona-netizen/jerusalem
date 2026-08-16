@@ -1,0 +1,23 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Emploi du temps — {{ student.full_name }}{% endblock %}
+{% block dashboard_content %}
+<h1>Emploi du temps — {{ student.full_name }}</h1>
+<div class="csj-table-wrap">
+  <table class="csj-table">
+    <thead><tr><th>Jour</th><th>Heure</th><th>Matière</th><th>Enseignant</th><th>Salle</th></tr></thead>
+    <tbody>
+      {% for entry in entries %}
+      <tr>
+        <td>{{ day_labels[entry.day] }}</td>
+        <td>{{ entry.start_time.strftime("%H:%M") }} – {{ entry.end_time.strftime("%H:%M") }}</td>
+        <td>{{ entry.subject.name }}</td>
+        <td>{{ entry.teacher.nom }}</td>
+        <td>{{ entry.room.name if entry.room else "—" }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" style="color: var(--csj-muted);">Emploi du temps pas encore publié.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

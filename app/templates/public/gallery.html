@@ -1,0 +1,16 @@
+{% extends "layouts/base.html" %}
+{% block title %}Galerie — CS Jérusalem{% endblock %}
+{% block content %}
+<section style="max-width: 900px; margin: 3rem auto; padding: 0 1.25rem;">
+  <h1>Galerie</h1>
+  {% if images %}
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:0.8rem;">
+    {% for image in images %}
+    <img src="{{ image.url }}" alt="Photo CS Jérusalem" style="width:100%; height:160px; object-fit:cover; border-radius:6px;">
+    {% endfor %}
+  </div>
+  {% else %}
+  <p style="color: var(--csj-muted);">Aucune photo publiée pour le moment.</p>
+  {% endif %}
+</section>
+{% endblock %}

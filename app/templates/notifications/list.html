@@ -1,0 +1,38 @@
+{% extends "layouts/base.html" %}
+{% block title %}Notifications — CS Jérusalem{% endblock %}
+{% block content %}
+<section style="max-width: 640px; margin: 2rem auto; padding: 0 1.25rem;">
+  <div style="display:flex; justify-content:space-between; align-items:center;">
+    <h1>Notifications</h1>
+    {% if notifications %}
+    <form method="post" action="{{ url_for('notifications.mark_all_read') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button type="submit" class="csj-btn secondary">Tout marquer comme lu</button>
+    </form>
+    {% endif %}
+  </div>
+
+  <ul class="csj-notif-list">
+    {% for n in notifications %}
+    <li class="csj-notif-item {{ '' if n.is_read else 'unread' }}">
+      <div class="title">{{ n.title }}</div>
+      {% if n.body %}<div>{{ n.body }}</div>{% endif %}
+      <div class="meta">
+        {{ n.TYPE_LABELS.get(n.type, n.type) }} — {{ n.created_at.strftime("%d/%m/%Y %H:%M") }}
+        {% if not n.is_read %}
+        <form method="post" action="{{ url_for('notifications.mark_read', notification_id=n.id) }}" style="display:inline; margin-left:0.5rem;">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="csj-btn secondary" style="padding:0.15rem 0.5rem; font-size:0.75rem;">Marquer comme lu</button>
+        </form>
+        {% endif %}
+        {% if n.related_url %}
+        <a href="{{ n.related_url }}" style="margin-left:0.5rem;">Voir</a>
+        {% endif %}
+      </div>
+    </li>
+    {% else %}
+    <p style="color: var(--csj-muted);">Aucune notification.</p>
+    {% endfor %}
+  </ul>
+</section>
+{% endblock %}

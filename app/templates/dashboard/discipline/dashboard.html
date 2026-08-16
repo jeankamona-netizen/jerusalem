@@ -1,0 +1,17 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Tableau de bord — Discipline{% endblock %}
+{% block dashboard_content %}
+<h1>Tableau de bord — Directeur de Discipline</h1>
+<p style="color: var(--csj-muted);">Accès strictement restreint aux informations disciplinaires.</p>
+{% if stats %}
+<div class="csj-cards">
+  <div class="csj-card"><div class="value">{{ stats.absent }}</div><div class="label">Absences aujourd'hui</div></div>
+  <div class="csj-card"><div class="value">{{ stats.retard }}</div><div class="label">Retards aujourd'hui</div></div>
+  <div class="csj-card"><div class="value">{{ stats.present }}</div><div class="label">Présents aujourd'hui</div></div>
+  <div class="csj-card"><div class="value">{{ incidents_recents }}</div><div class="label">Incidents (7 derniers jours)</div></div>
+  <div class="csj-card"><div class="value"><a href="{{ url_for('discipline.convocations') }}">{{ convocations_en_attente }}</a></div><div class="label">Convocations en attente</div></div>
+</div>
+{% else %}
+<p style="color: var(--csj-danger);">Aucune année scolaire active.</p>
+{% endif %}
+{% endblock %}

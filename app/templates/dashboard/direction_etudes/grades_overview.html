@@ -1,0 +1,55 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Notes & moyennes — Direction des Études{% endblock %}
+{% block dashboard_content %}
+<h1>Notes & moyennes</h1>
+
+{% if classes %}
+<form method="get" style="margin-bottom: 1rem; display:flex; gap:0.75rem; flex-wrap: wrap; align-items: end;">
+  <div class="csj-field" style="margin-bottom:0;">
+    <label for="classe_id">Classe</label>
+    <select name="classe_id" id="classe_id" onchange="this.form.submit()">
+      {% for c in classes %}
+      <option value="{{ c.id }}" {{ "selected" if selected_classe and c.id == selected_classe.id else "" }}>{{ c.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="csj-field" style="margin-bottom:0;">
+    <label for="term">Trimestre</label>
+    <select name="term" id="term" onchange="this.form.submit()">
+      {% for code, label in constants.TERM_LABELS.items() %}
+      <option value="{{ code }}" {{ "selected" if code == selected_term else "" }}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+</form>
+
+<div class="csj-table-wrap">
+  <table class="csj-table">
+    <thead><tr><th>Élève</th><th>Moyenne générale /20</th><th>Bulletin</th></tr></thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        <td>{{ row.student.full_name }}</td>
+        <td>{{ "%.2f"|format(row.average) if row.average is not none else "—" }}</td>
+        <td>
+          {% if row.report_card %}
+          <a href="{{ url_for('direction_etudes.bulletin_download', report_card_id=row.report_card.id) }}" class="csj-btn secondary">Télécharger</a>
+          {% endif %}
+          {% if current_user.has_permission(constants.BULLETINS_GENERATE) %}
+          <form method="post" action="{{ url_for('direction_etudes.generate_bulletin', student_id=row.student.id, term=selected_term) }}" style="display:inline;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="csj-btn">{{ "Régénérer" if row.report_card else "Générer" }}</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="3" style="color: var(--csj-muted);">Aucun élève actif dans cette classe.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<p style="color: var(--csj-muted);">Aucune classe configurée.</p>
+{% endif %}
+{% endblock %}

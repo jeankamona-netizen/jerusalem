@@ -1,0 +1,60 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Bibliothèque numérique — Direction des Études{% endblock %}
+{% block dashboard_content %}
+<h1>Bibliothèque numérique (supervision)</h1>
+<p style="color: var(--csj-muted);">Lecture seule — le dépôt de contenu reste la responsabilité de l'enseignant.</p>
+
+{% if classes %}
+<form method="get" style="margin-bottom: 1rem; max-width: 320px;">
+  <div class="csj-field">
+    <label for="classe_id">Classe</label>
+    <select name="classe_id" id="classe_id" onchange="this.form.submit()">
+      {% for c in classes %}
+      <option value="{{ c.id }}" {{ "selected" if selected_classe and c.id == selected_classe.id else "" }}>{{ c.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+</form>
+
+<h2>Supports de cours</h2>
+<div class="csj-table-wrap">
+  <table class="csj-table">
+    <thead><tr><th>Titre</th><th>Matière</th><th>Enseignant</th><th>Catégorie</th><th>Déposé le</th></tr></thead>
+    <tbody>
+      {% for m in materials %}
+      <tr>
+        <td>{{ m.title }}</td>
+        <td>{{ m.subject.name }}</td>
+        <td>{{ m.teacher_profile.nom }}</td>
+        <td>{{ m.CATEGORY_LABELS[m.category] }}</td>
+        <td>{{ m.created_at.strftime("%d/%m/%Y") }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" style="color: var(--csj-muted);">Aucun support de cours pour cette classe.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<h2 style="margin-top:2rem;">Devoirs</h2>
+<div class="csj-table-wrap">
+  <table class="csj-table">
+    <thead><tr><th>Titre</th><th>Matière</th><th>Enseignant</th><th>À rendre pour le</th></tr></thead>
+    <tbody>
+      {% for h in homeworks %}
+      <tr>
+        <td>{{ h.title }}</td>
+        <td>{{ h.subject.name }}</td>
+        <td>{{ h.teacher_profile.nom }}</td>
+        <td>{{ h.due_date.strftime("%d/%m/%Y") }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="4" style="color: var(--csj-muted);">Aucun devoir pour cette classe.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<p style="color: var(--csj-muted);">Aucune classe configurée.</p>
+{% endif %}
+{% endblock %}

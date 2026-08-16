@@ -1,0 +1,120 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Actualités & Événements — Préfet{% endblock %}
+{% block dashboard_content %}
+<h1>Actualités & Événements</h1>
+
+<div class="csj-panel">
+  <h2>Nouvelle actualité</h2>
+  <form method="post" enctype="multipart/form-data">
+    {{ announcement_form.csrf_token }}
+    <input type="hidden" name="form_name" value="announcement">
+    <div class="csj-field">
+      {{ announcement_form.title.label }} {{ announcement_form.title() }}
+      {% for error in announcement_form.title.errors %}<p class="csj-errors">{{ error }}</p>{% endfor %}
+    </div>
+    <div class="csj-field">
+      {{ announcement_form.body.label }} {{ announcement_form.body(rows=4) }}
+      {% for error in announcement_form.body.errors %}<p class="csj-errors">{{ error }}</p>{% endfor %}
+    </div>
+    <div class="csj-field">
+      {{ announcement_form.category.label }} {{ announcement_form.category() }}
+    </div>
+    <div class="csj-field">
+      {{ announcement_form.image.label }} {{ announcement_form.image() }}
+      {% for error in announcement_form.image.errors %}<p class="csj-errors">{{ error }}</p>{% endfor %}
+    </div>
+    <div class="csj-form-actions">
+      <button type="submit" class="csj-btn">Créer en brouillon</button>
+    </div>
+  </form>
+</div>
+
+<div class="csj-table-wrap">
+  <table class="csj-table">
+    <thead><tr><th>Titre</th><th>Catégorie</th><th>Statut</th><th>Image</th><th>Créée le</th><th></th></tr></thead>
+    <tbody>
+      {% for a in announcements %}
+      <tr>
+        <td>{{ a.title }}</td>
+        <td>{{ a.CATEGORY_LABELS[a.category] }}</td>
+        <td><span class="csj-pill {{ 'ok' if a.status == 'publie' else 'warn' }}">{{ a.STATUS_LABELS[a.status] }}</span></td>
+        <td>{{ "Oui" if images_by_announcement.get(a.id) else "—" }}</td>
+        <td>{{ a.created_at.strftime("%d/%m/%Y") }}</td>
+        <td style="display:flex; gap:0.4rem;">
+          {% if a.status == 'brouillon' %}
+          <form method="post" action="{{ url_for('prefet.announcement_publish', announcement_id=a.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="csj-btn">Publier</button>
+          </form>
+          {% else %}
+          <form method="post" action="{{ url_for('prefet.announcement_unpublish', announcement_id=a.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="csj-btn secondary">Dépublier</button>
+          </form>
+          {% endif %}
+          <form method="post" action="{{ url_for('prefet.announcement_delete', announcement_id=a.id) }}" onsubmit="return confirm('Supprimer cette actualité ?');">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="csj-btn secondary">Supprimer</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" style="color: var(--csj-muted);">Aucune actualité.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="csj-panel">
+  <h2>Nouvel événement</h2>
+  <form method="post" enctype="multipart/form-data">
+    {{ event_form.csrf_token }}
+    <input type="hidden" name="form_name" value="event">
+    <div class="csj-field">
+      {{ event_form.title.label }} {{ event_form.title() }}
+      {% for error in event_form.title.errors %}<p class="csj-errors">{{ error }}</p>{% endfor %}
+    </div>
+    <div class="csj-field">
+      {{ event_form.date.label }} {{ event_form.date() }}
+      {% for error in event_form.date.errors %}<p class="csj-errors">{{ error }}</p>{% endfor %}
+    </div>
+    <div class="csj-field">
+      {{ event_form.category.label }} {{ event_form.category() }}
+    </div>
+    <div class="csj-field">
+      {{ event_form.description.label }} {{ event_form.description(rows=3) }}
+    </div>
+    <div class="csj-field">
+      {{ event_form.image.label }} {{ event_form.image() }}
+      {% for error in event_form.image.errors %}<p class="csj-errors">{{ error }}</p>{% endfor %}
+    </div>
+    <div class="csj-form-actions">
+      <button type="submit" class="csj-btn">Créer l'événement</button>
+    </div>
+  </form>
+</div>
+
+<div class="csj-table-wrap">
+  <table class="csj-table">
+    <thead><tr><th>Titre</th><th>Catégorie</th><th>Date</th><th>Image</th><th></th></tr></thead>
+    <tbody>
+      {% for e in events %}
+      <tr>
+        <td>{{ e.title }}</td>
+        <td>{{ e.CATEGORY_LABELS[e.category] }}</td>
+        <td>{{ e.date.strftime("%d/%m/%Y") }}</td>
+        <td>{{ "Oui" if images_by_event.get(e.id) else "—" }}</td>
+        <td>
+          <form method="post" action="{{ url_for('prefet.event_delete', event_id=e.id) }}" onsubmit="return confirm('Supprimer cet événement ?');">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="csj-btn secondary">Supprimer</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" style="color: var(--csj-muted);">Aucun événement.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

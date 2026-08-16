@@ -1,0 +1,32 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Utilisateurs — Administration{% endblock %}
+{% block dashboard_content %}
+<h1>Utilisateurs</h1>
+<p><a href="{{ url_for('admin.user_new') }}" class="csj-btn">Nouvel utilisateur</a></p>
+<table style="width:100%; border-collapse: collapse; background: var(--csj-surface); border: 1px solid var(--csj-border); border-radius: 8px; overflow: hidden;">
+  <thead>
+    <tr style="background: var(--csj-bg); text-align:left;">
+      <th style="padding: 0.6rem 0.8rem;">Email</th>
+      <th style="padding: 0.6rem 0.8rem;">Rôles</th>
+      <th style="padding: 0.6rem 0.8rem;">Statut</th>
+      <th style="padding: 0.6rem 0.8rem;">Démo</th>
+      <th style="padding: 0.6rem 0.8rem;"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for u in users %}
+    <tr style="border-top: 1px solid var(--csj-border);">
+      <td style="padding: 0.6rem 0.8rem;">{{ u.email }}</td>
+      <td style="padding: 0.6rem 0.8rem;">{{ u.roles | map(attribute='label') | join(', ') }}</td>
+      <td style="padding: 0.6rem 0.8rem;">{{ "Actif" if u.is_active_account else "Désactivé" }}</td>
+      <td style="padding: 0.6rem 0.8rem;">{{ "Oui" if u.is_demo else "Non" }}</td>
+      <td style="padding: 0.6rem 0.8rem;">
+        {% if u.id != current_user.id %}
+        <a href="{{ url_for('admin.user_edit', user_id=u.id) }}" class="csj-btn secondary">Modifier</a>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @page { size: A5; margin: 1.5cm; }
+  body { font-family: Helvetica, Arial, sans-serif; font-size: 11pt; color: #1f2a24; }
+  .header { text-align: center; margin-bottom: 16px; }
+  .header h1 { font-size: 14pt; margin: 0; color: #0b3d2e; }
+  .header p { margin: 2px 0; font-size: 9pt; color: #5c6b63; }
+  .title { text-align: center; font-size: 13pt; font-weight: bold; margin: 14px 0; text-transform: uppercase; }
+  .number { text-align: center; font-size: 10pt; margin-bottom: 16px; color: #5c6b63; }
+  table.info { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+  table.info td { padding: 4px 6px; border-bottom: 1px solid #dde3df; font-size: 10pt; }
+  table.info td.label { color: #5c6b63; width: 40%; }
+  .amount-box { text-align: center; border: 1px solid #0b3d2e; padding: 10px; margin: 16px 0; }
+  .amount-box .amount { font-size: 16pt; font-weight: bold; color: #0b3d2e; }
+  .signatures { margin-top: 40px; width: 100%; }
+  .signatures td { width: 50%; text-align: center; font-size: 9pt; padding-top: 30px; border-top: 1px solid #1f2a24; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <h1>{{ school.name }}</h1>
+    <p>{{ school.city }}, {{ school.province }}, {{ school.country }}</p>
+  </div>
+
+  <div class="title">Reçu de paiement</div>
+  <div class="number">N° {{ receipt.number }}</div>
+
+  <table class="info">
+    <tr><td class="label">Élève</td><td>{{ student.full_name }}</td></tr>
+    <tr><td class="label">Matricule</td><td>{{ student.matricule or "—" }}</td></tr>
+    <tr><td class="label">Motif</td><td>{{ payment.fee.fee_type.label if payment.fee else "Versement" }}</td></tr>
+    <tr><td class="label">Date</td><td>{{ payment.payment_date.strftime("%d/%m/%Y") }}</td></tr>
+    <tr><td class="label">Mode de paiement</td><td>{{ payment.METHOD_LABELS[payment.method] if payment.method in payment.METHOD_LABELS else payment.method }}</td></tr>
+    {% if payment.reference %}<tr><td class="label">Référence</td><td>{{ payment.reference }}</td></tr>{% endif %}
+    <tr><td class="label">Encaissé par</td><td>{{ payment.recorded_by.email }}</td></tr>
+  </table>
+
+  <div class="amount-box">
+    <div class="amount">{{ "%.2f"|format(payment.amount) }} {{ payment.currency }}</div>
+  </div>
+
+  {% if payment.comment %}<p>{{ payment.comment }}</p>{% endif %}
+
+  <table class="signatures">
+    <tr>
+      <td>Signature du comptable</td>
+      <td>Cachet de l'établissement</td>
+    </tr>
+  </table>
+</body>
+</html>
