@@ -1,7 +1,16 @@
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 BASE_DIR = Path(__file__).resolve().parent
+
+# Chargé ici (et non seulement dans wsgi.py) pour que tout point d'entrée qui importe
+# `config` — wsgi.py, seed_demo.py, bootstrap_admin.py, la CLI `flask db ...` — bénéficie
+# d'un .env local, sans avoir à y penser individuellement dans chaque script. En production
+# (Render, etc.), les variables sont déjà injectées par la plateforme ; load_dotenv() ne
+# trouve alors aucun fichier .env et ne fait rien.
+load_dotenv()
 
 # FLASK_ENV=development est le SEUL moyen d'autoriser des valeurs de secours pour les secrets
 # (SECRET_KEY, mot de passe admin). Par défaut (variable absente, ex. en production), le

@@ -362,17 +362,24 @@ d'environnement à renseigner manuellement dans le tableau de bord Render (marqu
 | `ADMIN_MOT_DE_PASSE` | mot de passe réel du compte Super Admin — **à changer**, ne pas garder la valeur de développement |
 | `MAIL_SERVER`, `MAIL_USERNAME`, `MAIL_PASSWORD` | uniquement si le canal email des notifications doit être actif dès le lancement (sinon laisser vide, le site fonctionne normalement sans) |
 
-`SECRET_KEY` est généré automatiquement par Render (`generateValue: true`). `preDeployCommand:
-flask db upgrade` applique les migrations automatiquement à chaque déploiement, avant que la
-nouvelle version ne reçoive du trafic.
+`SECRET_KEY` est généré automatiquement par Render (`generateValue: true`). À chaque
+déploiement, `preDeployCommand` exécute dans l'ordre, avant que la nouvelle version ne reçoive
+du trafic :
+
+1. `flask db upgrade` — applique les migrations.
+2. `python bootstrap_admin.py` — crée (une seule fois, idempotent) l'établissement, le
+   catalogue de rôles/permissions, et le compte Super Admin réel à partir de `ADMIN_EMAIL` /
+   `ADMIN_MOT_DE_PASSE`. **Ne jamais utiliser `seed_demo.py` en production** : contrairement à
+   `bootstrap_admin.py`, il ajoute aussi des dizaines de comptes et d'élèves de démonstration
+   (`is_demo=True`) et une année scolaire aux dates figées — adapté à une démo locale, jamais
+   à une instance réelle.
 
 ### 4. Après le premier déploiement
 
-- Se connecter avec `ADMIN_EMAIL` / `ADMIN_MOT_DE_PASSE` définis en variables d'environnement.
-- **Ne pas lancer `seed_demo.py` en production** — il crée des comptes et données de
-  démonstration (`is_demo=True`) qui n'ont pas leur place sur une instance réelle. Créer les
-  vrais comptes (enseignants, comptables, etc.) via `/admin/utilisateurs`, et la vraie année
-  scolaire via `/admin/parametres`.
+- Se connecter avec `ADMIN_EMAIL` / `ADMIN_MOT_DE_PASSE` définis en variables d'environnement
+  — le compte existe déjà grâce à `bootstrap_admin.py` (étape 3).
+- Créer la vraie année scolaire via `/admin/parametres`, puis les vrais comptes (enseignants,
+  comptable, etc.) via `/admin/utilisateurs`.
 - **Stockage des fichiers uploadés (limite connue)** : les documents/photos téléversés
   (`instance/uploads/`) sont écrits sur le disque local du service. Sur le plan gratuit de
   Render, ce disque est **éphémère** — tout fichier téléversé est perdu à chaque redéploiement
