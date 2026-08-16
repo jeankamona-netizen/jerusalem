@@ -16,7 +16,7 @@ services:
       - key: DATABASE_URL
         sync: false
       - key: ADMIN_EMAIL
-        value: admin@csjerusalem.cd
+        value: prefet@csjerusalem.cd
       - key: ADMIN_MOT_DE_PASSE
         sync: false
       - key: MAIL_SERVER
