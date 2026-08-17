@@ -156,6 +156,12 @@ Windows et sur de nombreux hébergements simples.
 
 ## Module Site public élargi (Préfet + visiteurs)
 
+- **Page d'accueil** redessinée dans un style « institution officielle » (inspiré de sites
+  d'établissements méthodistes RDC existants) : hero plein écran avec photos de l'école en
+  fondu enchaîné et superposition teintée aux couleurs de l'établissement, ruban d'actualités
+  défilant, cartes d'actualités avec photo et badge de date, aperçu de galerie — tout branché
+  sur les vraies données (`Announcement`, `Event`, `Document`), aucun contenu statique/factice.
+  Vérifié responsive (aucun débordement horizontal à 375px) et toutes les images en 200.
 - Quatre nouvelles pages publiques : **à propos**, **vie scolaire** (contenu institutionnel
   statique), **actualités** (liste des annonces publiées + événements à venir) et **galerie**
   (photos issues des actualités publiées, plus les photos importées via `photos_ecole/`, voir

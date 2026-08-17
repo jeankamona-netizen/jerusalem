@@ -43,6 +43,9 @@ def home():
     images_by_event = {
         d.owner_id: d for d in Document.query.filter_by(owner_type="Event", category="image").all()
     }
+    images_by_announcement = {
+        d.owner_id: d for d in Document.query.filter_by(owner_type="Announcement", category="image").all()
+    }
 
     carousel_documents = Document.query.filter(
         Document.owner_type == "Gallery",
@@ -56,12 +59,33 @@ def home():
         if name in by_filename
     ]
 
+    # Aperçu galerie sur l'accueil : les 6 photos les plus récentes (mêmes sources que /galerie
+    # — annonces publiées + photothèque), pas seulement la sélection fixe du carrousel.
+    gallery_announcement_docs = (
+        Document.query.filter_by(owner_type="Announcement", category="image")
+        .join(Announcement, Announcement.id == Document.owner_id)
+        .filter(Announcement.status == Announcement.STATUS_PUBLIE)
+        .all()
+    )
+    gallery_photo_docs = Document.query.filter_by(owner_type="Gallery", category="photo").all()
+    gallery_preview = sorted(
+        gallery_announcement_docs + gallery_photo_docs, key=lambda d: d.created_at, reverse=True
+    )[:6]
+    gallery_preview_urls = [
+        url_for("public.news_image", document_id=d.id)
+        if d.owner_type == "Announcement"
+        else url_for("public.gallery_image", document_id=d.id)
+        for d in gallery_preview
+    ]
+
     return render_template(
         "public/home.html",
         latest_announcements=latest,
         upcoming_events=upcoming_events,
         images_by_event=images_by_event,
+        images_by_announcement=images_by_announcement,
         carousel_images=carousel_images,
+        gallery_preview_urls=gallery_preview_urls,
     )
 
 
