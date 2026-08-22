@@ -61,6 +61,8 @@ def _register_blueprints(app):
 
 
 def _register_template_globals(app):
+    from datetime import datetime
+
     from flask_login import current_user
 
     from app import constants
@@ -76,6 +78,10 @@ def _register_template_globals(app):
         # est le même raccourci déjà utilisé partout ailleurs dans l'application (préinscription,
         # séquence des reçus, etc.) tant qu'un vrai multi-établissement n'est pas branché.
         return {"school": School.query.first()}
+
+    @app.context_processor
+    def inject_current_year():
+        return {"current_year": datetime.now().year}
 
     @app.context_processor
     def inject_unread_notifications_count():

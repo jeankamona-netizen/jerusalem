@@ -3,6 +3,7 @@ from flask_wtf.file import FileAllowed, FileField
 from wtforms import DateField, SelectField, StringField, TextAreaField
 from wtforms.validators import DataRequired, Email, Length, Optional
 
+
 RELATION_CHOICES = [("Père", "Père"), ("Mère", "Mère"), ("Tuteur", "Tuteur"), ("Autre", "Autre")]
 UPLOAD_EXTENSIONS = ["jpg", "jpeg", "png", "webp", "pdf"]
 
@@ -32,3 +33,7 @@ class ApplicationForm(FlaskForm):
     document_scolaire = FileField(
         "Bulletin / document scolaire", validators=[Optional(), FileAllowed(UPLOAD_EXTENSIONS)]
     )
+
+
+class NewsletterForm(FlaskForm):
+    email = StringField("Adresse email", validators=[DataRequired(), Email(), Length(max=255)])

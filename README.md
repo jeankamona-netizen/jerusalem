@@ -162,6 +162,21 @@ Windows et sur de nombreux hébergements simples.
   défilant, cartes d'actualités avec photo et badge de date, aperçu de galerie — tout branché
   sur les vraies données (`Announcement`, `Event`, `Document`), aucun contenu statique/factice.
   Vérifié responsive (aucun débordement horizontal à 375px) et toutes les images en 200.
+- Page d'accueil complétée avec une section **À propos** (résumé + lien vers la page complète)
+  et **Nos valeurs fondamentales** (Discipline, Excellence, Foi — mêmes valeurs déjà écrites
+  sur `/a-propos`, pas de contenu inventé) — inspiré de la structure d'autres sites
+  d'établissements RDC, mais uniquement avec du contenu réel déjà présent dans l'application.
+  Les sections « Nos partenaires », « Notre localisation » et « Nous contacter » observées sur
+  ces sites de référence n'ont **pas** été ajoutées : elles nécessiteraient d'inventer une
+  adresse, un numéro de téléphone ou des noms de partenaires que je n'ai pas — à fournir par
+  l'établissement avant de les construire.
+- **Pied de page** commun à toutes les pages publiques (absent des tableaux de bord internes,
+  `{% block footer %}` vide dans `layouts/dashboard.html`) : bloc identité, **Liens rapides**
+  (toutes les pages publiques réelles) et **Newsletter** — formulaire d'inscription email
+  fonctionnel (nouveau modèle `NewsletterSubscriber`), idempotent (pas de doublon en cas de
+  double inscription), validation d'email côté serveur vérifiée. L'envoi réel de newsletters
+  n'est pas implémenté (seule la collecte l'est) — même logique que les canaux SMS/WhatsApp
+  des notifications : l'architecture de collecte est prête, l'envoi viendra plus tard.
 - Quatre nouvelles pages publiques : **à propos**, **vie scolaire** (contenu institutionnel
   statique), **actualités** (liste des annonces publiées + événements à venir) et **galerie**
   (photos issues des actualités publiées, plus les photos importées via `photos_ecole/`, voir

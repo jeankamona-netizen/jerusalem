@@ -334,6 +334,49 @@ a { color: var(--csj-primary); }
   display: block;
 }
 
+.csj-footer {
+  background: #0b1e14;
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: 2rem;
+}
+.csj-footer-grid {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1.2fr;
+  gap: 2rem;
+}
+.csj-footer-grid h4 { color: #fff; font-size: 0.95rem; margin: 0 0 0.8rem; }
+.csj-footer-grid ul { list-style: none; padding: 0; margin: 0; }
+.csj-footer-grid li { margin-bottom: 0.5rem; }
+.csj-footer-grid a { color: rgba(255, 255, 255, 0.75); text-decoration: none; font-size: 0.9rem; }
+.csj-footer-grid a:hover { color: #fff; text-decoration: underline; }
+.csj-footer-brand { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.6rem; }
+.csj-footer-brand img { width: 2.4rem; height: 2.4rem; object-fit: contain; }
+.csj-footer-brand strong { color: #fff; font-size: 1.05rem; }
+.csj-footer-tagline { font-size: 0.85rem; font-style: italic; color: rgba(255, 255, 255, 0.6); margin: 0 0 1rem; }
+.csj-footer-newsletter p { font-size: 0.85rem; color: rgba(255, 255, 255, 0.65); margin: 0 0 0.8rem; }
+.csj-footer-newsletter form { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.csj-footer-newsletter input[type="email"] {
+  flex: 1;
+  min-width: 160px;
+  padding: 0.5rem 0.7rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 0.9rem;
+}
+.csj-footer-newsletter input[type="email"]::placeholder { color: rgba(255, 255, 255, 0.5); }
+.csj-footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  text-align: center;
+  padding: 1rem 1.25rem;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
 @media (max-width: 768px) {
   .csj-app { flex-direction: column; }
   .csj-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--csj-border); display: flex; overflow-x: auto; padding: 0.5rem; }
@@ -342,4 +385,5 @@ a { color: var(--csj-primary); }
   .csj-hero { min-height: 380px; }
   .csj-hero-content h1 { font-size: 1.8rem; }
   .csj-gallery-preview { grid-template-columns: repeat(3, 1fr); }
+  .csj-footer-grid { grid-template-columns: 1fr; }
 }

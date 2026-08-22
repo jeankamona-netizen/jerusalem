@@ -72,3 +72,19 @@ class Event(db.Model, TimestampMixin):
 
     def __repr__(self):
         return f"<Event {self.title} date={self.date}>"
+
+
+class NewsletterSubscriber(db.Model, TimestampMixin):
+    """Inscription à la newsletter depuis le site public. Capture uniquement l'email pour
+    l'instant — l'envoi réel de newsletters n'est pas encore implémenté (même logique que les
+    canaux SMS/WhatsApp des notifications : l'architecture de collecte existe, l'envoi viendra
+    plus tard sans que cette table ait besoin de changer)."""
+
+    __tablename__ = "newsletter_subscribers"
+
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(255), unique=True, nullable=False)
+    is_active = db.Column(db.Boolean, nullable=False, default=True)
+
+    def __repr__(self):
+        return f"<NewsletterSubscriber {self.email}>"

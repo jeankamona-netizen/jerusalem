@@ -49,5 +49,43 @@
   {% endwith %}
 
   {% block content %}{% endblock %}
+
+  {% block footer %}
+  <footer class="csj-footer">
+    <div class="csj-footer-grid">
+      <div>
+        <div class="csj-footer-brand">
+          <img src="{{ url_for('public.logo') }}" alt="Logo {{ school.name if school else 'CS Jérusalem' }}">
+          <strong>{{ school.name if school else 'CS Jérusalem' }}</strong>
+        </div>
+        <p class="csj-footer-tagline">Discipline, excellence et foi au service de l'éducation.</p>
+      </div>
+      <div>
+        <h4>Liens rapides</h4>
+        <ul>
+          <li><a href="{{ url_for('public.home') }}">Accueil</a></li>
+          <li><a href="{{ url_for('public.about') }}">À propos</a></li>
+          <li><a href="{{ url_for('public.school_life') }}">Vie scolaire</a></li>
+          <li><a href="{{ url_for('public.news') }}">Actualités</a></li>
+          <li><a href="{{ url_for('public.gallery') }}">Galerie</a></li>
+          <li><a href="{{ url_for('public.application_new') }}">Préinscription</a></li>
+          <li><a href="{{ url_for('auth.login') }}">Connexion</a></li>
+        </ul>
+      </div>
+      <div class="csj-footer-newsletter">
+        <h4>Newsletter</h4>
+        <p>Recevez nos actualités et annonces importantes.</p>
+        <form method="post" action="{{ url_for('public.newsletter_subscribe') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="email" name="email" placeholder="Votre adresse email" required>
+          <button type="submit" class="csj-btn secondary" style="color:#fff; border-color:rgba(255,255,255,0.5);">S'inscrire</button>
+        </form>
+      </div>
+    </div>
+    <div class="csj-footer-bottom">
+      © {{ current_year }} {{ school.name if school else 'CS Jérusalem' }} — Tous droits réservés
+    </div>
+  </footer>
+  {% endblock %}
 </body>
 </html>

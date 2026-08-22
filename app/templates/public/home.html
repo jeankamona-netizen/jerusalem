@@ -37,6 +37,38 @@
 </div>
 {% endif %}
 
+<section style="max-width: 780px; margin: 3rem auto; padding: 0 1.25rem; text-align:center;">
+  <h2>À propos du {{ school.name if school else 'CS Jérusalem' }}</h2>
+  <p style="color: var(--csj-text);">
+    Offrir à chaque élève une éducation de qualité, fondée sur la discipline, l'excellence et
+    la foi, afin de former des citoyens responsables et compétents, capables de contribuer au
+    développement de leur communauté et de leur pays.
+  </p>
+  <p><a href="{{ url_for('public.about') }}">En savoir plus sur notre établissement →</a></p>
+</section>
+
+<section style="max-width: 1000px; margin: 0 auto 3rem; padding: 0 1.25rem;">
+  <h2 style="text-align:center;">Nos valeurs fondamentales</h2>
+  <p style="text-align:center; color: var(--csj-muted); margin-top:-0.5rem;">Trois principes qui guident la vie de l'établissement</p>
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:1.2rem; margin-top:1.5rem;">
+    <div class="csj-panel" style="text-align:center; margin-bottom:0;">
+      <div style="font-size:2rem;">📚</div>
+      <h3 style="margin:0.5rem 0 0.3rem;">Discipline</h3>
+      <p style="color: var(--csj-muted); font-size:0.9rem;">Un cadre structurant pour l'apprentissage et la vie en communauté.</p>
+    </div>
+    <div class="csj-panel" style="text-align:center; margin-bottom:0;">
+      <div style="font-size:2rem;">🏆</div>
+      <h3 style="margin:0.5rem 0 0.3rem;">Excellence</h3>
+      <p style="color: var(--csj-muted); font-size:0.9rem;">L'exigence académique au service de la réussite de chaque élève.</p>
+    </div>
+    <div class="csj-panel" style="text-align:center; margin-bottom:0;">
+      <div style="font-size:2rem;">🙏</div>
+      <h3 style="margin:0.5rem 0 0.3rem;">Foi</h3>
+      <p style="color: var(--csj-muted); font-size:0.9rem;">Un accompagnement spirituel ancré dans la tradition méthodiste.</p>
+    </div>
+  </div>
+</section>
+
 <section style="max-width: 1000px; margin: 3rem auto; padding: 0 1.25rem;">
   <h2>Actualités récentes</h2>
   {% if latest_announcements %}

@@ -2,12 +2,12 @@ import datetime
 import mimetypes
 import os
 
-from flask import abort, flash, redirect, render_template, send_file, url_for
+from flask import abort, flash, redirect, render_template, request, send_file, url_for
 
 from app.blueprints.public import public_bp
-from app.blueprints.public.forms import ApplicationForm
+from app.blueprints.public.forms import ApplicationForm, NewsletterForm
 from app.extensions import db, limiter
-from app.models import Announcement, Application, Classe, Document, Event, School
+from app.models import Announcement, Application, Classe, Document, Event, NewsletterSubscriber, School
 from app.services.audit import log_action
 from app.services.pdf import next_document_number
 from app.services.school_year import get_current_school_year
@@ -257,3 +257,30 @@ def application_confirmation(number):
     if not application:
         abort(404)
     return render_template("public/application_confirmation.html", application=application)
+
+
+@public_bp.route("/newsletter/inscription", methods=["POST"])
+@limiter.limit("10 per hour")
+def newsletter_subscribe():
+    """Le formulaire vit dans le pied de page de chaque page publique — on retourne toujours
+    vers la page d'où vient la soumission plutôt que vers une page dédiée."""
+    form = NewsletterForm()
+    redirect_target = request.referrer or url_for("public.home")
+
+    if not form.validate_on_submit():
+        flash("Adresse email invalide.", "error")
+        return redirect(redirect_target)
+
+    email = form.email.data.strip().lower()
+    existing = NewsletterSubscriber.query.filter_by(email=email).first()
+    if existing:
+        if not existing.is_active:
+            existing.is_active = True
+            db.session.commit()
+        flash("Vous êtes déjà inscrit à la newsletter.", "info")
+    else:
+        db.session.add(NewsletterSubscriber(email=email))
+        db.session.commit()
+        flash("Inscription à la newsletter confirmée. Merci !", "info")
+
+    return redirect(redirect_target)
