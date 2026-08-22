@@ -129,4 +129,79 @@
 </section>
 {% endif %}
 
+<section style="max-width: 1000px; margin: 0 auto 3rem; padding: 0 1.25rem;">
+  <h2 style="text-align:center;">Nos partenaires</h2>
+  <p style="text-align:center; color: var(--csj-muted); margin-top:-0.5rem;">Ils accompagnent l'établissement dans sa mission éducative</p>
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1.2rem; margin-top:1.5rem;">
+    <div class="csj-panel" style="text-align:center; margin-bottom:0;">
+      <strong>EMU</strong>
+      <p style="color: var(--csj-muted); font-size:0.9rem; margin:0.3rem 0 0;">Église Méthodiste Unie</p>
+    </div>
+    <div class="csj-panel" style="text-align:center; margin-bottom:0;">
+      <strong>UNESCO</strong>
+      <p style="color: var(--csj-muted); font-size:0.9rem; margin:0.3rem 0 0;">Organisation des Nations Unies pour l'éducation, la science et la culture</p>
+    </div>
+    <div class="csj-panel" style="text-align:center; margin-bottom:0;">
+      <strong>UMCOR</strong>
+      <p style="color: var(--csj-muted); font-size:0.9rem; margin:0.3rem 0 0;">United Methodist Committee on Relief</p>
+    </div>
+  </div>
+</section>
+
+{% if school and (school.address or school.opening_hours) %}
+<section style="max-width: 780px; margin: 0 auto 3rem; padding: 0 1.25rem;">
+  <h2 style="text-align:center;">Notre localisation</h2>
+  <div class="csj-panel" style="max-width:480px; margin: 1.5rem auto 0;">
+    {% if school.address %}
+    <p><strong>Adresse</strong><br>{{ school.address }}</p>
+    {% endif %}
+    {% if school.opening_hours %}
+    <p><strong>Heures de fonctionnement</strong><br>{{ school.opening_hours }}</p>
+    {% endif %}
+    {% if school.maps_url %}
+    <p style="margin-bottom:0;"><a href="{{ school.maps_url }}" target="_blank" rel="noopener">Voir l'itinéraire sur Google Maps →</a></p>
+    {% endif %}
+  </div>
+</section>
+{% endif %}
+
+<section id="contact" style="max-width: 780px; margin: 0 auto 3rem; padding: 0 1.25rem;">
+  <h2 style="text-align:center;">Nous contacter</h2>
+  <p style="text-align:center; color: var(--csj-muted); margin-top:-0.5rem;">Une question ? Écrivez-nous, nous vous répondrons rapidement.</p>
+
+  {% if school and (school.phone or school.address or school.opening_hours) %}
+  <div class="csj-panel" style="margin-top:1.5rem;">
+    {% if school.address %}<p><strong>Adresse :</strong> {{ school.address }}</p>{% endif %}
+    {% if school.phone %}<p><strong>Téléphone :</strong> <a href="tel:{{ school.phone }}">{{ school.phone }}</a></p>{% endif %}
+    {% if school.opening_hours %}<p style="margin-bottom:0;"><strong>Heures de fonctionnement :</strong> {{ school.opening_hours }}</p>{% endif %}
+  </div>
+  {% endif %}
+
+  <div class="csj-panel" style="margin-top:1rem;">
+    <h3>Envoyez-nous un message</h3>
+    <form method="post" action="{{ url_for('public.contact_submit') }}">
+      {{ contact_form.csrf_token }}
+      <div class="csj-field">
+        {{ contact_form.name.label }} {{ contact_form.name() }}
+        {% for error in contact_form.name.errors %}<p class="csj-errors">{{ error }}</p>{% endfor %}
+      </div>
+      <div class="csj-field">
+        {{ contact_form.email.label }} {{ contact_form.email() }}
+        {% for error in contact_form.email.errors %}<p class="csj-errors">{{ error }}</p>{% endfor %}
+      </div>
+      <div class="csj-field">
+        {{ contact_form.subject.label }} {{ contact_form.subject() }}
+        {% for error in contact_form.subject.errors %}<p class="csj-errors">{{ error }}</p>{% endfor %}
+      </div>
+      <div class="csj-field">
+        {{ contact_form.message.label }} {{ contact_form.message(rows=4) }}
+        {% for error in contact_form.message.errors %}<p class="csj-errors">{{ error }}</p>{% endfor %}
+      </div>
+      <div class="csj-form-actions">
+        <button type="submit" class="csj-btn">Envoyer le message</button>
+      </div>
+    </form>
+  </div>
+</section>
+
 {% endblock %}

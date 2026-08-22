@@ -1,0 +1,36 @@
+{% extends "layouts/dashboard.html" %}
+{% block title %}Messages de contact — Préfet{% endblock %}
+{% block dashboard_content %}
+<h1>Messages de contact</h1>
+<p style="color: var(--csj-muted);">Reçus via le formulaire « Nous contacter » du site public.</p>
+
+<div class="csj-table-wrap">
+  <table class="csj-table">
+    <thead><tr><th>Reçu le</th><th>Statut</th><th>Nom</th><th>Email</th><th>Sujet</th><th>Message</th><th></th></tr></thead>
+    <tbody>
+      {% for m in messages %}
+      <tr>
+        <td>{{ m.created_at.strftime("%d/%m/%Y %H:%M") }}</td>
+        <td>
+          {% if m.read_at %}<span class="csj-pill ok">Lu</span>{% else %}<span class="csj-pill warn">Non lu</span>{% endif %}
+        </td>
+        <td>{{ m.name }}</td>
+        <td><a href="mailto:{{ m.email }}">{{ m.email }}</a></td>
+        <td>{{ m.subject }}</td>
+        <td style="max-width:300px;">{{ m.message }}</td>
+        <td>
+          {% if not m.read_at %}
+          <form method="post" action="{{ url_for('prefet.contact_message_mark_read', message_id=m.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="csj-btn secondary">Marquer comme lu</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" style="color: var(--csj-muted);">Aucun message reçu.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -8,7 +8,7 @@ from app.models.schedule import Room, Schedule
 from app.models.admissions import Application, Document
 from app.models.discipline import Convocation, DisciplinaryAction, DisciplinaryIncident
 from app.models.notification import Notification
-from app.models.content import Announcement, Event, NewsletterSubscriber
+from app.models.content import Announcement, ContactMessage, Event, NewsletterSubscriber
 from app.models.library import CourseMaterial, Homework
 from app.models.system import AuditLog
 
@@ -49,6 +49,7 @@ __all__ = [
     "Announcement",
     "Event",
     "NewsletterSubscriber",
+    "ContactMessage",
     "CourseMaterial",
     "Homework",
     "AuditLog",

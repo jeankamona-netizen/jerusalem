@@ -9,7 +9,7 @@ from app import constants
 from app.blueprints.prefet import prefet_bp
 from app.blueprints.prefet.forms import AnnouncementForm, EventForm
 from app.extensions import db
-from app.models import Announcement, Application, Classe, Document, Event, StudentProfile, TeacherProfile
+from app.models import Announcement, Application, Classe, ContactMessage, Document, Event, StudentProfile, TeacherProfile
 from app.models.mixins import utcnow
 from app.services.admissions import accept_application
 from app.services.attendance import daily_school_stats
@@ -380,3 +380,24 @@ def report_academic_pdf():
         report=report,
     )
     return Response(pdf_bytes, mimetype="application/pdf")
+
+
+@prefet_bp.route("/messages")
+@require_permission(constants.CONTENT_MANAGE)
+def contact_messages():
+    messages = ContactMessage.query.order_by(ContactMessage.created_at.desc()).all()
+    return render_template(
+        "dashboard/prefet/contact_messages.html",
+        sidebar_items=sidebar_items_for(current_user),
+        messages=messages,
+    )
+
+
+@prefet_bp.route("/messages/<int:message_id>/lire", methods=["POST"])
+@require_permission(constants.CONTENT_MANAGE)
+def contact_message_mark_read(message_id):
+    message = ContactMessage.query.get_or_404(message_id)
+    if not message.read_at:
+        message.read_at = utcnow()
+        db.session.commit()
+    return redirect(url_for("prefet.contact_messages"))

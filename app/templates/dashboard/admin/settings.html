@@ -25,6 +25,13 @@
       {% for error in form.logo.errors %}<p class="csj-errors">{{ error }}</p>{% endfor %}
       <img src="{{ url_for('public.logo') }}" alt="Logo actuel" style="width:4rem; height:4rem; object-fit:contain; margin-top:0.5rem; display:block;">
     </div>
+    <div class="csj-field">{{ form.phone.label }} {{ form.phone() }}</div>
+    <div class="csj-field">{{ form.address.label }} {{ form.address(rows=2) }}</div>
+    <div class="csj-field">{{ form.opening_hours.label }} {{ form.opening_hours(placeholder="Lundi - Vendredi : 07h20 - 13h15") }}</div>
+    <div class="csj-field">
+      {{ form.maps_url.label }} {{ form.maps_url(placeholder="https://www.google.com/maps?q=...") }}
+      {% for error in form.maps_url.errors %}<p class="csj-errors">{{ error }}</p>{% endfor %}
+    </div>
     <div class="csj-form-actions">
       <button type="submit" class="csj-btn">Enregistrer</button>
     </div>

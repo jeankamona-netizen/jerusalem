@@ -166,10 +166,18 @@ Windows et sur de nombreux hébergements simples.
   et **Nos valeurs fondamentales** (Discipline, Excellence, Foi — mêmes valeurs déjà écrites
   sur `/a-propos`, pas de contenu inventé) — inspiré de la structure d'autres sites
   d'établissements RDC, mais uniquement avec du contenu réel déjà présent dans l'application.
-  Les sections « Nos partenaires », « Notre localisation » et « Nous contacter » observées sur
-  ces sites de référence n'ont **pas** été ajoutées : elles nécessiteraient d'inventer une
-  adresse, un numéro de téléphone ou des noms de partenaires que je n'ai pas — à fournir par
-  l'établissement avant de les construire.
+- **Nos partenaires**, **Notre localisation** et **Nous contacter** : ajoutés une fois les
+  vraies coordonnées fournies par l'établissement (adresse, téléphone, horaires, lien Google
+  Maps, partenaires réels — EMU, UNESCO, UMCOR). L'adresse/téléphone/horaires/lien Maps sont
+  des champs `School` éditables via `/admin/parametres` (comme le logo et les couleurs), pas
+  codés en dur — un déménagement ou un changement d'horaires ne nécessite pas de redéploiement.
+  Les partenaires restent en dur dans le template (liste courte, change rarement, comme les
+  valeurs fondamentales).
+- **Nous contacter** inclut un vrai formulaire de message (`ContactForm` → modèle
+  `ContactMessage`), consultable par le Préfet (`/prefet/messages`, permission
+  `content.manage`) avec marquage lu/non lu — pas de réponse automatique, un humain doit
+  rappeler/répondre. Vérifié : soumission réussie, message visible côté Préfet, 403 pour un
+  autre rôle (Comptable), marquage comme lu fonctionnel.
 - **Pied de page** commun à toutes les pages publiques (absent des tableaux de bord internes,
   `{% block footer %}` vide dans `layouts/dashboard.html`) : bloc identité, **Liens rapides**
   (toutes les pages publiques réelles) et **Newsletter** — formulaire d'inscription email

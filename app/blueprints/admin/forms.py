@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField
-from wtforms import BooleanField, DateField, PasswordField, SelectMultipleField, StringField
+from wtforms import BooleanField, DateField, PasswordField, SelectMultipleField, StringField, TextAreaField
 from wtforms.validators import DataRequired, Email, Length, Optional
 from wtforms.widgets import CheckboxInput, ListWidget
 
@@ -18,6 +18,10 @@ class SettingsForm(FlaskForm):
     primary_color = StringField("Couleur primaire", validators=[Optional(), Length(max=20)])
     secondary_color = StringField("Couleur secondaire", validators=[Optional(), Length(max=20)])
     logo = FileField("Logo (optionnel)", validators=[Optional(), FileAllowed(LOGO_UPLOAD_EXTENSIONS)])
+    phone = StringField("Téléphone", validators=[Optional(), Length(max=30)])
+    address = TextAreaField("Adresse", validators=[Optional(), Length(max=300)])
+    opening_hours = StringField("Heures de fonctionnement", validators=[Optional(), Length(max=200)])
+    maps_url = StringField("Lien Google Maps", validators=[Optional(), Length(max=500)])
 
 
 class SchoolYearForm(FlaskForm):

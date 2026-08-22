@@ -142,6 +142,10 @@ def settings():
         school.currency_default = form.currency_default.data.strip().upper()
         school.primary_color = form.primary_color.data.strip() if form.primary_color.data else None
         school.secondary_color = form.secondary_color.data.strip() if form.secondary_color.data else None
+        school.phone = form.phone.data.strip() if form.phone.data else None
+        school.address = form.address.data.strip() if form.address.data else None
+        school.opening_hours = form.opening_hours.data.strip() if form.opening_hours.data else None
+        school.maps_url = form.maps_url.data.strip() if form.maps_url.data else None
 
         try:
             if form.logo.data and form.logo.data.filename:

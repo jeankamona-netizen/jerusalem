@@ -37,3 +37,10 @@ class ApplicationForm(FlaskForm):
 
 class NewsletterForm(FlaskForm):
     email = StringField("Adresse email", validators=[DataRequired(), Email(), Length(max=255)])
+
+
+class ContactForm(FlaskForm):
+    name = StringField("Nom complet", validators=[DataRequired(), Length(max=150)])
+    email = StringField("Adresse email", validators=[DataRequired(), Email(), Length(max=255)])
+    subject = StringField("Sujet", validators=[DataRequired(), Length(max=200)])
+    message = TextAreaField("Message", validators=[DataRequired(), Length(max=2000)])

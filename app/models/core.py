@@ -23,6 +23,12 @@ class School(db.Model, TimestampMixin):
     secondary_color = db.Column(db.String(20), nullable=True, default="#d62e1f")
     is_active = db.Column(db.Boolean, nullable=False, default=True)
 
+    # Coordonnées publiques (site public : section "Nous contacter" / "Notre localisation").
+    phone = db.Column(db.String(30), nullable=True)
+    address = db.Column(db.String(300), nullable=True)
+    opening_hours = db.Column(db.String(200), nullable=True)
+    maps_url = db.Column(db.String(500), nullable=True)
+
     school_years = db.relationship("SchoolYear", back_populates="school")
     users = db.relationship("User", back_populates="school")
 

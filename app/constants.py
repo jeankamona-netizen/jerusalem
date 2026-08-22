@@ -220,6 +220,7 @@ SIDEBAR_ITEMS = [
     {"label": "Bibliothèque (supervision)", "endpoint": "direction_etudes.library_overview", "permission": LIBRARY_VIEW_ALL},
     {"label": "Préinscriptions", "endpoint": "prefet.applications", "permission": APPLICATIONS_MANAGE},
     {"label": "Actualités & Événements", "endpoint": "prefet.content", "permission": CONTENT_MANAGE},
+    {"label": "Messages de contact", "endpoint": "prefet.contact_messages", "permission": CONTENT_MANAGE},
     {"label": "Rapports", "endpoint": "prefet.reports", "permission": REPORTS_VIEW},
     {"label": "Utilisateurs", "endpoint": "admin.users", "permission": ADMIN_MANAGE_USERS},
     {"label": "Paramètres", "endpoint": "admin.settings", "permission": ADMIN_MANAGE_SETTINGS},

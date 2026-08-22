@@ -88,3 +88,22 @@ class NewsletterSubscriber(db.Model, TimestampMixin):
 
     def __repr__(self):
         return f"<NewsletterSubscriber {self.email}>"
+
+
+class ContactMessage(db.Model, TimestampMixin):
+    """Message envoyé depuis le formulaire « Nous contacter » du site public. Consultable par
+    le Préfet (même logique de supervision globale que les préinscriptions/actualités) —
+    aucune réponse automatique n'est envoyée, un humain doit rappeler/répondre par
+    téléphone/email."""
+
+    __tablename__ = "contact_messages"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(150), nullable=False)
+    email = db.Column(db.String(255), nullable=False)
+    subject = db.Column(db.String(200), nullable=False)
+    message = db.Column(db.String(2000), nullable=False)
+    read_at = db.Column(db.DateTime, nullable=True)
+
+    def __repr__(self):
+        return f"<ContactMessage {self.subject} from={self.email}>"

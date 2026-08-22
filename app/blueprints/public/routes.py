@@ -5,9 +5,9 @@ import os
 from flask import abort, flash, redirect, render_template, request, send_file, url_for
 
 from app.blueprints.public import public_bp
-from app.blueprints.public.forms import ApplicationForm, NewsletterForm
+from app.blueprints.public.forms import ApplicationForm, ContactForm, NewsletterForm
 from app.extensions import db, limiter
-from app.models import Announcement, Application, Classe, Document, Event, NewsletterSubscriber, School
+from app.models import Announcement, Application, Classe, ContactMessage, Document, Event, NewsletterSubscriber, School
 from app.services.audit import log_action
 from app.services.pdf import next_document_number
 from app.services.school_year import get_current_school_year
@@ -86,6 +86,7 @@ def home():
         images_by_announcement=images_by_announcement,
         carousel_images=carousel_images,
         gallery_preview_urls=gallery_preview_urls,
+        contact_form=ContactForm(),
     )
 
 
@@ -284,3 +285,29 @@ def newsletter_subscribe():
         flash("Inscription à la newsletter confirmée. Merci !", "info")
 
     return redirect(redirect_target)
+
+
+@public_bp.route("/contact", methods=["POST"])
+@limiter.limit("10 per hour")
+def contact_submit():
+    """Le formulaire vit dans la section « Nous contacter » de la page d'accueil — pas de
+    réponse automatique, un humain doit rappeler/répondre (voir /prefet/messages)."""
+    form = ContactForm()
+
+    if not form.validate_on_submit():
+        for field_errors in form.errors.values():
+            for error in field_errors:
+                flash(error, "error")
+        return redirect(url_for("public.home", _anchor="contact"))
+
+    db.session.add(
+        ContactMessage(
+            name=form.name.data.strip(),
+            email=form.email.data.strip(),
+            subject=form.subject.data.strip(),
+            message=form.message.data.strip(),
+        )
+    )
+    db.session.commit()
+    flash("Message envoyé. Nous vous répondrons dans les plus brefs délais.", "info")
+    return redirect(url_for("public.home", _anchor="contact"))
