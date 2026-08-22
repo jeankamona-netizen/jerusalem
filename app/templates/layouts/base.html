@@ -31,10 +31,12 @@
           <button type="submit" class="csj-btn secondary" style="margin-left:1rem;">Déconnexion</button>
         </form>
       {% else %}
+        <a href="{{ url_for('public.options') }}">Options</a>
+        <a href="{{ url_for('public.gallery') }}">Galerie</a>
+        <a href="{{ url_for('public.news') }}">Actualités</a>
         <a href="{{ url_for('public.about') }}">À propos</a>
         <a href="{{ url_for('public.school_life') }}">Vie scolaire</a>
-        <a href="{{ url_for('public.news') }}">Actualités</a>
-        <a href="{{ url_for('public.gallery') }}">Galerie</a>
+        <a href="{{ url_for('public.home') }}#contact">Contact</a>
         <a href="{{ url_for('auth.login') }}">Connexion</a>
       {% endif %}
     </nav>
@@ -64,6 +66,7 @@
         <h4>Liens rapides</h4>
         <ul>
           <li><a href="{{ url_for('public.home') }}">Accueil</a></li>
+          <li><a href="{{ url_for('public.options') }}">Options</a></li>
           <li><a href="{{ url_for('public.about') }}">À propos</a></li>
           <li><a href="{{ url_for('public.school_life') }}">Vie scolaire</a></li>
           <li><a href="{{ url_for('public.news') }}">Actualités</a></li>

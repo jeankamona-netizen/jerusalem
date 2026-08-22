@@ -111,6 +111,48 @@ TERM_T3 = "T3"
 TERM_LABELS = {TERM_T1: "1er trimestre", TERM_T2: "2e trimestre", TERM_T3: "3e trimestre"}
 TERMS = list(TERM_LABELS.keys())
 
+# Options (sections) offertes par l'établissement — présentées sur le site public (page
+# /options + aperçu sur la page d'accueil). Contenu statique en dur, comme les valeurs
+# fondamentales et les partenaires : une liste courte qui ne change pas souvent, pas besoin
+# d'une table dédiée pour l'instant.
+SCHOOL_OPTIONS = [
+    {
+        "code": "CG",
+        "label": "Commerciale & Gestion",
+        "description": "Techniques commerciales, comptabilité et gestion d'entreprise.",
+    },
+    {
+        "code": "HP",
+        "label": "Humanité Pédagogique",
+        "description": "Formation des futurs enseignants du primaire.",
+    },
+    {
+        "code": "TCC",
+        "label": "Coupe et Couture",
+        "description": "Techniques de coupe, de couture et de confection de vêtements.",
+    },
+    {
+        "code": "MG",
+        "label": "Mécanique Générale",
+        "description": "Mécanique industrielle et maintenance générale.",
+    },
+    {
+        "code": "MA",
+        "label": "Mécanique Auto",
+        "description": "Entretien et réparation des véhicules automobiles.",
+    },
+    {
+        "code": "EG",
+        "label": "Electricité Générale",
+        "description": "Installation et maintenance électrique.",
+    },
+    {
+        "code": "EB",
+        "label": "7e et 8e EB",
+        "description": "Éducation de base — tronc commun avant l'orientation vers les options.",
+    },
+]
+
 PERMISSION_LABELS = {
     DASHBOARD_PREFET: "Accéder au tableau de bord Préfet",
     DASHBOARD_DIRECTION_ETUDES: "Accéder au tableau de bord Direction des Études",

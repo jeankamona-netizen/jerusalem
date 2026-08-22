@@ -1,0 +1,22 @@
+{% extends "layouts/base.html" %}
+{% block title %}Nos options — CS Jérusalem{% endblock %}
+{% block content %}
+<section style="max-width: 1000px; margin: 3rem auto; padding: 0 1.25rem;">
+  <h1 style="text-align:center;">Découvrez nos options</h1>
+  <p style="text-align:center; color: var(--csj-muted); margin-top:-0.5rem;">
+    Une formation variée pour préparer les élèves à leur avenir.
+  </p>
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:1.2rem; margin-top:2rem;">
+    {% for option in options %}
+    <div class="csj-panel" style="margin-bottom:0;">
+      <span class="csj-pill">{{ option.code }}</span>
+      <h2 style="margin:0.5rem 0 0.3rem; font-size:1.1rem;">{{ option.label }}</h2>
+      <p style="color: var(--csj-muted); font-size:0.9rem; margin:0;">{{ option.description }}</p>
+    </div>
+    {% endfor %}
+  </div>
+  <p style="margin-top:2rem; text-align:center;">
+    <a href="{{ url_for('public.application_new') }}" class="csj-btn">Faire une préinscription</a>
+  </p>
+</section>
+{% endblock %}

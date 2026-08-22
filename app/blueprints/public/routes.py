@@ -4,6 +4,7 @@ import os
 
 from flask import abort, flash, redirect, render_template, request, send_file, url_for
 
+from app import constants
 from app.blueprints.public import public_bp
 from app.blueprints.public.forms import ApplicationForm, ContactForm, NewsletterForm
 from app.extensions import db, limiter
@@ -110,6 +111,11 @@ def about():
 @public_bp.route("/vie-scolaire")
 def school_life():
     return render_template("public/school_life.html")
+
+
+@public_bp.route("/options")
+def options():
+    return render_template("public/options.html", options=constants.SCHOOL_OPTIONS)
 
 
 @public_bp.route("/actualites")
