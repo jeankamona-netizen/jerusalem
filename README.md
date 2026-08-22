@@ -162,6 +162,11 @@ Windows et sur de nombreux hébergements simples.
   défilant, cartes d'actualités avec photo et badge de date, aperçu de galerie — tout branché
   sur les vraies données (`Announcement`, `Event`, `Document`), aucun contenu statique/factice.
   Vérifié responsive (aucun débordement horizontal à 375px) et toutes les images en 200.
+- **Options** (`/options` + section « Découvrez nos options » sur l'accueil) : là où le site de
+  référence affiche des facultés universitaires, les 7 options réelles de l'établissement sont
+  listées (`constants.SCHOOL_OPTIONS`) — Commerciale & Gestion, Humanité Pédagogique, Coupe et
+  Couture, Mécanique Générale, Mécanique Auto, Electricité Générale, 7e et 8e EB. Contenu
+  statique en dur (liste courte, change rarement), comme les valeurs et les partenaires.
 - Page d'accueil complétée avec une section **À propos** (résumé + lien vers la page complète)
   et **Nos valeurs fondamentales** (Discipline, Excellence, Foi — mêmes valeurs déjà écrites
   sur `/a-propos`, pas de contenu inventé) — inspiré de la structure d'autres sites
